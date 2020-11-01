@@ -10,7 +10,7 @@ releases:
   version: "0.2.3"
   values:
     - environments/{{ .Environment.Name }}/metallb/resources.yaml
-    - environments/{{ .Environment.Name }}/metallb/templates.yaml.gotmpl
+    - environments/all/metallb/templates.yaml.gotmpl
   labels:
     tier: loadbalancer
 
