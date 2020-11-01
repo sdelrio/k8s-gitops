@@ -1,0 +1,33 @@
+repositories:
+  - name: chartcenter
+    url: https://repo.chartcenter.io
+
+releases:
+- name: metallb-config
+  chart: chartcenter/incubator/raw
+  namespace: metallb-system
+  wait: true
+  version: "0.2.3"
+  values:
+    - environments/{{ .Environment.Name }}/resources.yaml
+    - environments/{{ .Environment.Name }}/templates.yaml.gotmpl
+
+- name: metallb-system
+  namespace: metallb-system
+  createNamespace: true
+  wait: true
+  chart: ./metallb
+  hooks:
+    - events:
+        - prepare
+        - cleanup
+      command: "./helmify.sh"
+      args: ["{{`{{if eq .Event.Name \"prepare\"}}build{{else}}clean{{end}}`}}", "{{`{{.Release.Chart}}`}}", "{{`{{.Environment.Name}}`}}"]
+
+environments:
+  dev:
+    secrets:
+      - environments/dev/secrets.yaml
+  nuc:
+    secrets:
+      - environments/nuc/secrets.yaml

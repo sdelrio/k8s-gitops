@@ -1,0 +1,8 @@
+templates:
+- |
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: memberlist
+  stringData:
+    secretkey: {{ .Values.secretkey }}

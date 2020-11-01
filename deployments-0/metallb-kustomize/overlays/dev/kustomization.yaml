@@ -1,0 +1,4 @@
+# kustomization.yaml
+---
+resources:
+- https://raw.githubusercontent.com/metallb/metallb/v0.9.4/manifests/metallb.yaml

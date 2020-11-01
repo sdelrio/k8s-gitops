@@ -1,0 +1,12 @@
+resources:
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: config
+  data:
+    config: |
+      address-pools:
+      - name: my-ip-space
+        protocol: layer2
+        addresses:
+        - 192.168.55.200-192.168.55.250
