@@ -9,8 +9,8 @@ releases:
   wait: true
   version: "0.2.3"
   values:
-    - environments/{{ .Environment.Name }}/resources.yaml
-    - environments/{{ .Environment.Name }}/templates.yaml.gotmpl
+    - environments/{{ .Environment.Name }}/metallb/resources.yaml
+    - environments/{{ .Environment.Name }}/metallb/templates.yaml.gotmpl
 
 - name: metallb-system
   namespace: metallb-system
@@ -24,10 +24,28 @@ releases:
       command: "./helmify.sh"
       args: ["{{`{{if eq .Event.Name \"prepare\"}}build{{else}}clean{{end}}`}}", "{{`{{.Release.Chart}}`}}", "{{`{{.Environment.Name}}`}}"]
 
+- name: nginx-internal
+  chart: chartcenter/kubernetes-ingress-nginx/ingress-nginx
+  namespace: kube-system
+  wait: false
+  version: '{{ .Values | get "internal_version" "2.1.13" }}'
+  values:
+    - environments/{{ .Environment.Name }}/nginx/internal.yaml
+
+- name: nginx-external
+  chart: chartcenter/kubernetes-ingress-nginx/ingress-nginx
+  namespace: kube-system
+  wait: false
+  version: '{{ .Values | get "external_version" "2.1.13" }}'
+  values:
+    - environments/{{ .Environment.Name }}/nginx/external.yaml
+
 environments:
   dev:
     secrets:
       - environments/dev/secrets.yaml
+    values:
+      - environments/dev/nginx/values.yaml
   nuc:
     secrets:
       - environments/nuc/secrets.yaml
