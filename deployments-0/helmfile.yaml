@@ -31,6 +31,7 @@ releases:
 - name: nginx-internal
   chart: chartcenter/kubernetes-ingress-nginx/ingress-nginx
   namespace: kube-system
+  createNamespace: true
   wait: false
   version: '{{ .Values | get "internal_version" "2.1.13" }}'
   values:
@@ -42,6 +43,7 @@ releases:
 - name: nginx-external
   chart: chartcenter/kubernetes-ingress-nginx/ingress-nginx
   namespace: kube-system
+  createNamespace: true
   wait: false
   version: '{{ .Values | get "external_version" "2.1.13" }}'
   values:
@@ -49,6 +51,28 @@ releases:
   labels:
     tier: ingress
     scope: external
+
+- name: cert-manager
+  namespace: cert-manager
+  createNamespace: true
+  wait: true
+  chart: chartcenter/jetstack/cert-manager
+  version: 'v1.0.4'
+  values:
+    - installCRDs: true
+  labels:
+    tier: ingress
+    scope: certmanager
+
+- name: cert-manager-issuers
+  chart: chartcenter/incubator/raw
+  namespace: cert-manager
+  version: "0.2.3"
+  values:
+    - environments/{{ .Environment.Name }}/cert-manager/templates.yaml.gotmpl
+  labels:
+    tier: ingress
+    scope: issuers
 
 environments:
   dev:
@@ -59,3 +83,5 @@ environments:
   nuc:
     secrets:
       - environments/nuc/secrets.yaml
+    values:
+      - environments/dev/nginx/values.yaml
