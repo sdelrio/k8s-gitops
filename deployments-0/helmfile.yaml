@@ -11,6 +11,8 @@ releases:
   values:
     - environments/{{ .Environment.Name }}/metallb/resources.yaml
     - environments/{{ .Environment.Name }}/metallb/templates.yaml.gotmpl
+  labels:
+    tier: loadbalancer
 
 - name: metallb-system
   namespace: metallb-system
@@ -23,6 +25,8 @@ releases:
         - cleanup
       command: "./helmify.sh"
       args: ["{{`{{if eq .Event.Name \"prepare\"}}build{{else}}clean{{end}}`}}", "{{`{{.Release.Chart}}`}}", "{{`{{.Environment.Name}}`}}"]
+  labels:
+    tier: loadbalancer
 
 - name: nginx-internal
   chart: chartcenter/kubernetes-ingress-nginx/ingress-nginx
@@ -31,6 +35,9 @@ releases:
   version: '{{ .Values | get "internal_version" "2.1.13" }}'
   values:
     - environments/{{ .Environment.Name }}/nginx/internal.yaml
+  labels:
+    tier: ingress
+    scope: internal
 
 - name: nginx-external
   chart: chartcenter/kubernetes-ingress-nginx/ingress-nginx
@@ -39,6 +46,9 @@ releases:
   version: '{{ .Values | get "external_version" "2.1.13" }}'
   values:
     - environments/{{ .Environment.Name }}/nginx/external.yaml
+  labels:
+    tier: ingress
+    scope: external
 
 environments:
   dev:
