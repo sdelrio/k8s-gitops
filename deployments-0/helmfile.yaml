@@ -57,7 +57,7 @@ releases:
   createNamespace: true
   wait: true
   chart: chartcenter/jetstack/cert-manager
-  version: 'v1.0.4'
+  version: '{{ .Values | get "certmanager_version" "v1.0.4" }}'
   values:
     - installCRDs: true
   labels:
@@ -80,8 +80,10 @@ environments:
       - environments/dev/secrets.yaml
     values:
       - environments/dev/nginx/values.yaml
+      - certmanager_version: 'v1.0.4'
   nuc:
     secrets:
       - environments/nuc/secrets.yaml
     values:
       - environments/dev/nginx/values.yaml
+      - certmanager_version: 'v0.16.0'
