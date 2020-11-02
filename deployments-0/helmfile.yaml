@@ -19,6 +19,8 @@ releases:
   createNamespace: true
   wait: true
   chart: ./metallb
+  needs:
+    - metalllb-config
   hooks:
     - events:
         - prepare
@@ -61,17 +63,18 @@ releases:
   values:
     - installCRDs: true
   labels:
-    tier: ingress
-    scope: certmanager
+    tier: cert
+    scope: manager
 
-- name: cert-manager-issuers
+- name: cert-issuers
   chart: chartcenter/incubator/raw
   namespace: cert-manager
   version: "0.2.3"
+  disableValidation: true
   values:
     - environments/{{ .Environment.Name }}/cert-manager/templates.yaml.gotmpl
   labels:
-    tier: ingress
+    tier: cert
     scope: issuers
 
 environments:
