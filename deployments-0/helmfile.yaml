@@ -77,6 +77,30 @@ releases:
     tier: cert
     scope: issuers
 
+- name: hostpath
+  namespace: openebs
+  createNamespace: true
+  wait: true
+  chart: chartcenter/openebs/openebs
+  version: '{{ .Values | get "openebs_version" "2.2.1" }}'
+  values:
+    - environments/{{ .Environment.Name }}/openebs/values.yaml
+  labels:
+    tier: storage
+    scope: openebs
+
+- name: hostpath-sc
+  chart: chartcenter/incubator/raw
+  namespace: cert-manager
+  version: "0.2.3"
+#  disableValidation: true
+  values:
+    - environments/{{ .Environment.Name }}/openebs/sc-openebs-hostpath.yaml
+  labels:
+    tier: storage
+    scope: class
+
+
 environments:
   dev:
     secrets:
@@ -84,9 +108,11 @@ environments:
     values:
       - environments/dev/nginx/values.yaml
       - certmanager_version: 'v1.0.4'
+      - openebs_version: '2.0.0'
   nuc:
     secrets:
       - environments/nuc/secrets.yaml
     values:
       - environments/dev/nginx/values.yaml
       - certmanager_version: 'v0.16.0'
+      - openebs_version: '2.0.0'
