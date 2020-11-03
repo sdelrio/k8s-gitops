@@ -100,6 +100,17 @@ releases:
     tier: storage
     scope: class
 
+- name: longhorn
+  namespace: longhorn
+  createNamespace: true
+  wait: true
+  chart: chartcenter/longhorn/longhorn
+  version: '{{ .Values | get "longhorn_version" "1.0.2" }}'
+  values:
+    - environments/{{ .Environment.Name }}/longhorn/values.yaml
+  labels:
+    tier: storage
+    scope: longhorn
 
 environments:
   dev:
@@ -109,6 +120,7 @@ environments:
       - environments/dev/nginx/values.yaml
       - certmanager_version: 'v1.0.4'
       - openebs_version: '2.0.0'
+      - longhorn_version: '1.0.2'
   nuc:
     secrets:
       - environments/nuc/secrets.yaml
@@ -116,3 +128,4 @@ environments:
       - environments/dev/nginx/values.yaml
       - certmanager_version: 'v0.16.0'
       - openebs_version: '2.0.0'
+      - longhorn_version: '1.0.2'
