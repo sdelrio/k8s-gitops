@@ -35,7 +35,7 @@ releases:
   namespace: kube-system
   createNamespace: true
   wait: false
-  version: '{{ .Values | get "internal_version" "2.1.13" }}'
+  version: '{{ .Values | get "nginx_int_version" "2.1.13" }}'
   values:
     - environments/{{ .Environment.Name }}/nginx/internal.yaml
   labels:
@@ -47,7 +47,7 @@ releases:
   namespace: kube-system
   createNamespace: true
   wait: false
-  version: '{{ .Values | get "external_version" "2.1.13" }}'
+  version: '{{ .Values | get "nginx_ext_version" "2.1.13" }}'
   values:
     - environments/{{ .Environment.Name }}/nginx/external.yaml
   labels:
@@ -117,7 +117,8 @@ environments:
     secrets:
       - environments/dev/secrets.yaml
     values:
-      - environments/dev/nginx/values.yaml
+      - nginx_int_version: '2.12.1'
+      - nginx_ext_version: '2.11.3'
       - certmanager_version: 'v1.0.4'
       - openebs_version: '2.0.0'
       - longhorn_version: '1.0.2'
@@ -125,7 +126,8 @@ environments:
     secrets:
       - environments/nuc/secrets.yaml
     values:
-      - environments/dev/nginx/values.yaml
+      - nginx_int_version: '2.11.3'
+      - nginx_ext_version: '2.15.0'
       - certmanager_version: 'v0.16.0'
       - openebs_version: '2.0.0'
       - longhorn_version: '1.0.2'
