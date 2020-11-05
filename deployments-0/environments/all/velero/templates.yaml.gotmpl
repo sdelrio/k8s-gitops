@@ -1,0 +1,12 @@
+templates:
+- |
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: cloud-credentials
+  stringData:
+    cloud: |
+      [default]
+      aws_access_key_id =  {{ .Values.velero_s3_key_id }}
+      aws_secret_access_key = {{ .Values.velero_s3_access_key }}
+      repository-password = {{ .Values.velero_password }}

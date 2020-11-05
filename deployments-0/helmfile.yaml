@@ -112,6 +112,29 @@ releases:
     tier: storage
     scope: longhorn
 
+
+- name: velero-config
+  chart: chartcenter/incubator/raw
+  createNamespace: true
+  namespace: velero
+  wait: true
+  version: "0.2.3"
+  values:
+    - environments/all/velero/templates.yaml.gotmpl
+  labels:
+    tier: velero
+
+- name: velero-system
+  namespace: velero
+  createNamespace: true
+  disableValidation: true
+  chart: chartcenter/vmware-tanzu/velero
+  version: '{{ .Values | get "velero_version" "2.13.6" }}'
+  values:
+    - environments/{{ .Environment.Name }}/velero/values.yaml.gotmpl
+  labels:
+    tier: velero
+
 environments:
   dev:
     secrets:
@@ -122,6 +145,7 @@ environments:
       - certmanager_version: 'v1.0.4'
       - openebs_version: '2.0.0'
       - longhorn_version: '1.0.2'
+      - velero_version: '2.8.10'
   nuc:
     secrets:
       - environments/nuc/secrets.yaml
@@ -131,3 +155,4 @@ environments:
       - certmanager_version: 'v0.16.0'
       - openebs_version: '2.0.0'
       - longhorn_version: '1.0.2'
+      - velero_version: '2.8.2'
