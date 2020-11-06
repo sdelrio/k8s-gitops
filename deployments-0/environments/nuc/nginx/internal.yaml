@@ -7,7 +7,7 @@ controller:
     enabled: true
   service:
     externalTrafficPolicy: Local
-    loadBalancerIP: 192.168.55.201
+    loadBalancerIP: 192.168.1.240
   deploymentAnnotations: {}
 
   config:

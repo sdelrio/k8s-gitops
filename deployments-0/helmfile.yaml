@@ -3,6 +3,13 @@ repositories:
     url: https://repo.chartcenter.io
 
 releases:
+
+#  LB + INGRESS CONTROLLERS
+#  * MetalLB as Load Balancer
+#  * NGinx for internal usage (lan)
+#  * NGinx for external usage (internet)
+#  * CertManager for ssl certificates for external usage
+
 - name: metallb-config
   chart: chartcenter/incubator/raw
   namespace: metallb-system
@@ -35,7 +42,7 @@ releases:
   namespace: kube-system
   createNamespace: true
   wait: false
-  version: '{{ .Values | get "nginx_int_version" "2.1.13" }}'
+  version: '{{ .Values | get "nginx_int_version" "3.0.8" }}'
   values:
     - environments/{{ .Environment.Name }}/nginx/internal.yaml
   labels:
@@ -47,7 +54,7 @@ releases:
   namespace: kube-system
   createNamespace: true
   wait: false
-  version: '{{ .Values | get "nginx_ext_version" "2.1.13" }}'
+  version: '{{ .Values | get "nginx_ext_version" "3.0.8" }}'
   values:
     - environments/{{ .Environment.Name }}/nginx/external.yaml
   labels:
@@ -76,6 +83,11 @@ releases:
   labels:
     tier: cert
     scope: issuers
+
+#  STORAGE
+#  * OpenEBS localPV for high IOPs or clustered apps
+#  * Longorn clustered storaged
+#  * Velero for backup
 
 - name: hostpath
   namespace: openebs
@@ -112,7 +124,6 @@ releases:
     tier: storage
     scope: longhorn
 
-
 - name: velero-config
   chart: chartcenter/incubator/raw
   createNamespace: true
@@ -140,19 +151,19 @@ environments:
     secrets:
       - environments/dev/secrets.yaml
     values:
-      - nginx_int_version: '2.12.1'
-      - nginx_ext_version: '2.11.3'
+      - nginx_int_version: '3.8.0'
+      - nginx_ext_version: '3.8.0'
       - certmanager_version: 'v1.0.4'
-      - openebs_version: '2.0.0'
+      - openebs_version: '2.2.1'
       - longhorn_version: '1.0.2'
       - velero_version: '2.8.10'
   nuc:
     secrets:
       - environments/nuc/secrets.yaml
     values:
-      - nginx_int_version: '2.11.3'
-      - nginx_ext_version: '2.15.0'
-      - certmanager_version: 'v0.16.0'
-      - openebs_version: '2.0.0'
+      - nginx_int_version: '3.8.0'
+      - nginx_ext_version: '3.8.0'
+      - certmanager_version: 'v1.0.4'
+      - openebs_version: '2.2.1'
       - longhorn_version: '1.0.2'
       - velero_version: '2.8.2'
