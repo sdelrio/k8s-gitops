@@ -1,7 +1,7 @@
 configuration:
   provider: aws
   backupStorageLocation:
-    name: {{ .Values.velero_backup_name }}
+    name: default
     bucket: {{ .Values.velero_backup_bucket }}
     config:
       region: "{{ .Values.velero_backup_region }}"

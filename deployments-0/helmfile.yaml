@@ -133,7 +133,8 @@ releases:
   values:
     - environments/all/velero/templates.yaml.gotmpl
   labels:
-    tier: velero
+    tier: backup
+    scope: s3config
 
 - name: velero-system
   namespace: velero
@@ -144,7 +145,8 @@ releases:
   values:
     - environments/{{ .Environment.Name }}/velero/values.yaml.gotmpl
   labels:
-    tier: velero
+    tier: backup
+    scope: velero
 
 environments:
   dev:
@@ -156,7 +158,7 @@ environments:
       - certmanager_version: 'v1.0.4'
       - openebs_version: '2.2.1'
       - longhorn_version: '1.0.2'
-      - velero_version: '2.8.10'
+      - velero_version: '2.12.17'
   nuc:
     secrets:
       - environments/nuc/secrets.yaml
