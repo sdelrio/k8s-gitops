@@ -4,6 +4,8 @@ templates:
   kind: Secret
   metadata:
     name: cloud-credentials
+    labels:
+      app.kubernetes.io/name: velero
   stringData:
     cloud: |
       [default]
