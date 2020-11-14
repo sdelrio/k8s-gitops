@@ -26,7 +26,7 @@ def main():
 
     with Diagram("Deployment-0", graph_attr=graph_attr,
                  show=False, filename="img/deployment-0",
-                 outformat="svg", direction="LR"):
+                 outformat="png", direction="LR"):
 
         with Cluster("Backup"):
             velero = Backup("Velero")

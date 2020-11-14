@@ -12,5 +12,4 @@ wheels/
 .tox/
 *.cover
 coverage.xml
-*.png
 *.jpg
