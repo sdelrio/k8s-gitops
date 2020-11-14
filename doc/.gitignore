@@ -1,0 +1,17 @@
+__pycache__/
+.vscode/
+.venv/
+*.py[cod]
+*$pi.class
+.Python
+build/
+dist/
+eggs/
+.eggs/
+wheels/
+.tox/
+*.cover
+coverage.xml
+*.png
+*.svg
+*.jpg
