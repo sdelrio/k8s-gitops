@@ -28,7 +28,7 @@ For storage will install OpenEBS for localPV and Longhorn for distributed storag
 
 The passwords are stored under SOPS, helmfile will automatically decode it with PGP (if you are cloning the repo you would have to make your own secrets file with your own certificate).
 
-<img src="https://raw.githubusercontent.com/sdelrio/k8s-gitops/master/doc/img/deployment-0.png" width="20%" height="auto" />
+<img src="https://media.githubusercontent.com/media/sdelrio/k8s-gitops/master/doc/img/deployment-0.png" width="20%" height="auto" />
 
 ---
 # :wrench:&nbsp; Deployment Tools
