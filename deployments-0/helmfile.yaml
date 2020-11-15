@@ -13,6 +13,7 @@ releases:
 - name: metallb-config
   chart: chartcenter/incubator/raw
   namespace: metallb-system
+  createNamespace: true
   wait: true
   version: "0.2.3"
   values:
@@ -20,14 +21,13 @@ releases:
     - environments/all/metallb/templates.yaml.gotmpl
   labels:
     tier: loadbalancer
+    scope: metalconfig
 
 - name: metallb-system
   namespace: metallb-system
   createNamespace: true
   wait: true
   chart: ./metallb
-  needs:
-    - metalllb-config
   hooks:
     - events:
         - prepare
@@ -36,6 +36,7 @@ releases:
       args: ["{{`{{if eq .Event.Name \"prepare\"}}build{{else}}clean{{end}}`}}", "{{`{{.Release.Chart}}`}}", "{{`{{.Environment.Name}}`}}"]
   labels:
     tier: loadbalancer
+    scope: metalsystem
 
 - name: nginx-internal
   chart: chartcenter/kubernetes-ingress-nginx/ingress-nginx
