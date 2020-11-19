@@ -85,6 +85,21 @@ releases:
     tier: cert
     scope: issuers
 
+#  AUTO LABEL NODES for usb/pci devices
+#  * node-feature-discovery
+
+- name: node-feature-discovery
+  namespace: nf-discovery
+  createNamespace: true
+  wait: false
+  chart: chartcenter/k8s-at-home/node-feature-discovery
+  version: '{{ .Values | get "node_feature_discovery" "2.0.0" }}'
+  values:
+    - environments/{{ .Environment.Name }}/nf-discovery/values.yaml
+  labels:
+    tier: discovery
+    scope: node-feature
+
 #  STORAGE
 #  * OpenEBS localPV for high IOPs or clustered apps
 #  * Longorn clustered storaged
