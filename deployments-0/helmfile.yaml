@@ -4,6 +4,20 @@ repositories:
 
 releases:
 
+#  DNS
+#  * External-DNS (required for ingress) https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/cloudflare.md#deploying-an-nginx-service
+
+- name: external-dns
+  namespace: external-dns
+  createNamespace: true
+  chart: chartcenter/bitnami/external-dns
+  version: '{{ .Values | get "external_dns_version" "4.0.0" }}'
+  values:
+    - environments/{{ .Environment.Name }}/external-dns/values.yaml.gotmpl
+  labels:
+    tier: dns
+    scope: externaldns
+
 #  LB + INGRESS CONTROLLERS
 #  * MetalLB as Load Balancer
 #  * NGinx for internal usage (lan)
@@ -160,6 +174,7 @@ environments:
       - openebs_version: '2.2.1'
       - longhorn_version: '1.0.2'
       - velero_version: '2.12.17'
+      - external_dns_version: '4.0.0.0'
   nuc:
     secrets:
       - environments/nuc/secrets.yaml
