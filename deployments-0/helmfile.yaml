@@ -38,6 +38,29 @@ releases:
     tier: loadbalancer
     scope: metalsystem
 
+- name: cert-manager
+  namespace: cert-manager
+  createNamespace: true
+  wait: true
+  chart: chartcenter/jetstack/cert-manager
+  version: '{{ .Values | get "certmanager_version" "v1.0.4" }}'
+  values:
+    - installCRDs: true
+  labels:
+    tier: cert
+    scope: manager
+
+- name: cert-issuers
+  chart: chartcenter/incubator/raw
+  namespace: cert-manager
+  version: "0.2.3"
+  disableValidation: true
+  values:
+    - environments/{{ .Environment.Name }}/cert-manager/templates.yaml.gotmpl
+  labels:
+    tier: cert
+    scope: issuers
+
 - name: nginx-internal
   chart: chartcenter/kubernetes-ingress-nginx/ingress-nginx
   namespace: kube-system
@@ -61,29 +84,6 @@ releases:
   labels:
     tier: ingress
     scope: external
-
-- name: cert-manager
-  namespace: cert-manager
-  createNamespace: true
-  wait: true
-  chart: chartcenter/jetstack/cert-manager
-  version: '{{ .Values | get "certmanager_version" "v1.0.4" }}'
-  values:
-    - installCRDs: true
-  labels:
-    tier: cert
-    scope: manager
-
-- name: cert-issuers
-  chart: chartcenter/incubator/raw
-  namespace: cert-manager
-  version: "0.2.3"
-  disableValidation: true
-  values:
-    - environments/{{ .Environment.Name }}/cert-manager/templates.yaml.gotmpl
-  labels:
-    tier: cert
-    scope: issuers
 
 #  STORAGE
 #  * OpenEBS localPV for high IOPs or clustered apps
