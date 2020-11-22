@@ -125,6 +125,17 @@ releases:
     tier: storage
     scope: longhorn
 
+- name: longhorn-sc
+  chart: chartcenter/incubator/raw
+  namespace: longhorn
+  version: "0.2.3"
+  disableValidation: true
+  values:
+    - environments/{{ .Environment.Name }}/longhorn/sc-longhorn.yaml
+  labels:
+    tier: storage-class
+    scope: longhorn
+
 - name: velero-config
   chart: chartcenter/incubator/raw
   createNamespace: true
