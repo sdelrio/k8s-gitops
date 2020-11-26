@@ -1,0 +1,28 @@
+logLevel: debug
+
+crd:
+  create: true    ## Install and use the integrated DNSEndpoint CRD
+
+resources:
+  requests:
+    memory: 250Mi
+    cpu: 25m
+  limits:
+    memory: 500Mi
+    cpu: 100m
+
+provider: cloudflare
+
+metrics:
+  enabled: true
+
+cloudflare:
+  apiToken: {{ .Values.cf_token }}   ## When using the Cloudflare provider, CF_API_TOKEN to set (optional) 	""
+  email: {{ .Values.cf_email }}     ## When using the Cloudflare provider, CF_API_EMAIL to set (optional). Needed when using CF_API_KEY 	""
+  proxied: false   ## When using the Cloudflare provider, enable the proxy feature (DDOS protection, CDN…) (optional) 	true
+
+zoneIdFilters:
+- {{ .Values.cf_zoneid_filter_1 }}
+domainFilters:
+- {{ .Values.cf_domain_filter_1 }}
+excludeDomains: []  ## Exclude subdomains (optional)
