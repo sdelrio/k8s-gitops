@@ -4,6 +4,23 @@ repositories:
 
 releases:
 
+#  VAULT + SECRETS OPERATOR
+#  * VAULT
+#  * Secrets oeprator
+#  https://github.com/ricoberger/vault-secrets-operator
+
+- name: vault
+  chart: chartcenter/hashicorp/vault
+  version: "0.8.0"
+  namespace: vault
+  createNamespace: true
+  wait: true
+  values:
+    - environments/{{ .Environment.Name }}/vault/values.yaml.gotmpl
+  labels:
+    tier: secrets
+    scope: vault
+
 #  LB + INGRESS CONTROLLERS
 #  * MetalLB as Load Balancer
 #  * NGinx for internal usage (lan)
