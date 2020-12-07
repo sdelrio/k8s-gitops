@@ -1,0 +1,84 @@
+server:
+  dataStorage:
+    enabled: true
+    # Size of the PVC created
+    size: 5Gi
+    # Location where the PVC will be mounted.
+    mountPath: "/vault/data"
+    # Name of the storage class to use.  If null it will use the
+    # configured default Storage Class.
+    storageClass: null
+    # Access Mode of the storage device being used for the PVC
+    accessMode: ReadWriteOnce
+    # Annotations to apply to the PVC
+    annotations: {}
+
+  ingress:
+    enabled: true
+    hosts:
+      - host: vault.dev.{{ .Values.dns_domain_1 }}
+        paths: [ "/" ]
+    tls:
+      - hosts:
+          - vault.dev.{{ .Values.dns_domain_1 }}
+
+  standalone:
+    enabled: false
+
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      # Enables Raft integrated storage
+      enabled: true
+      # Set the Node Raft ID to the name of the pod
+      setNodeId: true
+      # Note: Configuration files are stored in ConfigMaps so sensitive data
+      # such as passwords should be either mounted through extraSecretEnvironmentVars
+      # or through a Kube secret.  For more information see:
+      # https://www.vaultproject.io/docs/platform/k8s/helm/run#protecting-sensitive-vault-configurations
+      config: |
+        ui = true
+        listener "tcp" {
+          tls_disable = 1
+          address = "[::]:8200"
+          cluster_address = "[::]:8201"
+        }
+        storage "raft" {
+          path = "/vault/data"
+        }
+        seal "awskms" {
+          region     = "{{ .Values.awskms_region }}"
+          access_key = "{{ .Values.awskms_access_key }}"
+          secret_key = "{{ .Values.awskms_secret_key }}"
+          kms_key_id = "{{ .Values.awskms_key_id }}"
+        }
+        service_registration "kubernetes" {}
+
+# GCE KMS
+# https://www.vaultproject.io/docs/configuration/seal/gcpckms
+#            seal "gcpckms" {
+#              project     = "kms-vault"
+#              region      = "global"
+#              key_ring    = "vault-unseal"
+#              crypto_key  = "vault-key"
+#            }
+# AWS KMS
+# https://www.vaultproject.io/docs/configuration/seal/awskms
+#        seal "awskms" {
+#          region     = "us-east-1"
+#          kms_key_id = ""
+#       }
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 256Mi
+      cpu: 250m
+
+  statefulSet:
+    annotations: {}
+
+ui:
+  enabled: true
