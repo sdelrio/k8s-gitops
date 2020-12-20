@@ -1,0 +1,42 @@
+---
+- name: Create ceph group
+  group:
+    name: ceph
+    gid: "{{ ceph_dependencies_gid }}"
+  tags:
+    - storage/dependencies
+
+- name: Create ceph user
+  user:
+    name: ceph
+    uid: "{{ ceph_dependencies_uid }}"
+    shell: /bin/nologin
+    group: ceph
+    home: /var/lib/rook/rook-ceph
+    createhome: false
+    system: true
+  tags:
+    - storage/dependencies
+
+- name: Increase file descriptors
+  copy:
+    content: 'ceph       soft    nproc     unlimited'
+    dest: /etc/security/limits.d/50-ceph.conf
+  tags:
+    - storage/dependencies
+
+- name: Adjust PID count for hosts with high number of OSDs
+  sysctl:
+    name: kernel.pid_max
+    value: '4194303'
+    sysctl_file: /etc/sysctl.d/99-z_ceph.conf
+    sysctl_set: yes
+  tags:
+    - storage/dependencies
+
+- name: install lvm
+  apt:
+    name: lvm2
+    state: latest
+  tags:
+    - storage/dependencies

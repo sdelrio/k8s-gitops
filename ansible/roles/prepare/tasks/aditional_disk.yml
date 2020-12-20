@@ -1,0 +1,40 @@
+---
+
+- name: Create a new primary partition
+  parted:
+    device: "{{ prepare_additional_disk_dev }}"
+    number: 1
+    state: present
+
+- name: "Create a ext4 filesystem on {{ prepare_additional_disk_dev }}1"
+  filesystem:
+    fstype: ext4
+    dev: "{{ prepare_additional_disk_dev }}1"
+    force: "{{ prepare_additional_disks_force_format }}"
+
+- name: Get UUID for partition
+  command: blkid -s UUID -o value "{{ prepare_additional_disk_dev }}1"
+  register: disk_blkid
+  check_mode: no
+  changed_when: false
+
+- name: Mount "{{ prepare_additional_disk_dev }}1" to /mnt
+  mount:
+    path: /mnt
+    src: "UUID={{ disk_blkid.stdout }}"
+    fstype: ext4
+    opts: defaults,noatime
+    state: mounted
+
+- name: Create directories
+  file:
+    path: "/mnt/{{ item | basename }}"
+    state: directory
+  loop: "{{ prepare_additional_disk_directories }}"
+
+- name: Create a symbolic to directories
+  file:
+    src: "/mnt/{{ item | basename }}"
+    dest: "{{ item }}"
+    state: link
+  loop: "{{ prepare_additional_disk_directories }}"

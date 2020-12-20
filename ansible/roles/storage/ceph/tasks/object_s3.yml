@@ -1,0 +1,5 @@
+---
+- name: create ceph object class
+  community.kubernetes.k8s:
+    definition: "{{ item }}"
+  loop: "{{ lookup('template', 'object_s3.yml.j2') | from_yaml }}"

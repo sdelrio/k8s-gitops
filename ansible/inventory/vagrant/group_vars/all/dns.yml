@@ -1,0 +1,4 @@
+---
+## Enable/Disable write IPs in /etc/hosts
+populate_inventory_to_hosts_file: true
+

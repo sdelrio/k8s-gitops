@@ -1,0 +1,21 @@
+---
+- import_tasks: operator.yml
+  tags:
+    - ceph
+    - ceph-operator
+
+- import_tasks: cluster.yml
+  tags:
+    - ceph
+    - ceph-cluster
+
+- import_tasks: storage_class.yml
+  tags:
+    - ceph
+    - ceph-storage-class
+
+- import_tasks: object_s3.yml
+  tags:
+    - ceph
+    - ceph-object-s3
+

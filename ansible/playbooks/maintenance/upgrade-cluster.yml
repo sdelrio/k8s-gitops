@@ -1,0 +1,5 @@
+---
+- import_playbook:  ../../playbooks/install/kubespray.yml
+
+- import_playbook: ../../kubespray/upgrade-cluster.yml
+

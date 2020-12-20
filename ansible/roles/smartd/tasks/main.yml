@@ -1,0 +1,36 @@
+---
+
+- name: install smartmontools
+  apt:
+    name:
+    - smartmontools
+    - moreutils
+    state: latest
+  tags:
+    - smartd
+
+- name: configure smartd
+  copy:
+    src: smartmon.sh
+    dest: /usr/local/bin/smartmon.sh
+    mode: 0755
+  tags:
+    - smartd
+
+- name: create log dir
+  file:
+    path: /var/log/prometheus
+    state: directory
+  tags:
+    - smartd
+
+- name: add smartmon.sh to cron
+  cron:
+    name: collect smartctl metrics to prometheus
+    minute: "*/5"
+    user: root
+    job: "/usr/local/bin/smartmon.sh | sponge /var/log/prometheus/smartmon.prom"
+    cron_file: smartmon
+  tags:
+    - smartd
+
