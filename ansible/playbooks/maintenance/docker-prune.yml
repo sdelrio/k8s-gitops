@@ -1,0 +1,19 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+    - name: Install dependencies
+      apt:
+        name: python3-docker
+        state: present
+
+    - name: Prune everything
+      docker_prune:
+        containers: yes
+        images: yes
+        images_filters:
+          dangling: false
+        networks: yes
+        volumes: yes
+

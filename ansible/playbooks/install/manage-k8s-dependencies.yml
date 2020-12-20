@@ -1,0 +1,18 @@
+---
+- hosts: kube-master
+  any_errors_fatal: true
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Install k8s apt module dependencies
+      apt:
+        name:
+          - python3-yaml
+          - python3-pip
+
+    - name: Install openshift pip package
+      pip:
+        name: openshift>=0.6
+
+#  roles:
+#    - geerlingguy.helm

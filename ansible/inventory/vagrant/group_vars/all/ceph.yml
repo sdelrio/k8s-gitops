@@ -1,0 +1,40 @@
+---
+install_ceph: false
+# ceph
+ceph_nodes:
+  - name: "k8s-1"
+    deviceFilter: "^vd."
+    resources:
+      limits:
+        cpu: "2"
+        memory: "2Gi"
+      requests:
+        cpu: "1"
+        memory: "1Gi"
+  - name: "k8s-2"
+    deviceFilter: "^vd."
+    resources:
+      limits:
+        cpu: "2"
+        memory: "2Gi"
+      requests:
+        cpu: "1"
+        memory: "1Gi"
+  - name: "k8s-3"
+    deviceFilter: "^vd."
+    resources:
+      limits:
+        cpu: "2"
+        memory: "2Gi"
+      requests:
+        cpu: "1"
+        memory: "1Gi"
+  - name: "k8s-4"
+    deviceFilter: "^vd."
+    resources:
+      limits:
+        cpu: "2"
+        memory: "2Gi"
+      requests:
+        cpu: "1"
+        memory: "1Gi"

@@ -1,0 +1,5 @@
+---
+- name: create ceph storage class
+  community.kubernetes.k8s:
+    definition: "{{ item }}"
+  loop: "{{ lookup('template', 'storage_class.yml.j2') | from_yaml }}"

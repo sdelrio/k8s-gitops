@@ -1,0 +1,5 @@
+---
+- name: deploy ceph cluster
+  community.kubernetes.k8s:
+    definition: "{{ item }}"
+  loop: "{{ lookup('template', 'cluster.yml.j2') | from_yaml }}"
