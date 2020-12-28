@@ -1,0 +1,109 @@
+grafana:
+  enabled: true
+  ingress:
+    enabled: true
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - grafana.internal.{{ .Values.dns_domain_1 }}
+    tls:
+      - hosts:
+          - grafana.internal.{{ .Values.dns_domain_1 }}
+  adminPassword: {{ .Values.grafana_admin_password }}
+  persistence:
+    enabled: true
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      url: http://loki-stack:3100
+      access: proxy
+      isDefault: false
+      version: 1
+  plugins:
+    - grafana-piechart-panel
+
+prometheus:
+  enabled: true
+  prometheusSpec:
+    replicas: 1
+    retentionSize: 20GB
+    retention: 30d
+    resources:
+      requests:
+        cpu: 500m
+        memory: 500Mi
+      limits:
+        cpu: 1500m
+        memory: 2000Mi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: openebs-hostpath
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi
+
+prometheusOperator:
+# https://github.com/helm/charts/issues/19147
+  admissionWebhooks:
+    enabled: false
+    patch:
+      enabled: false
+  tls:
+    enabled: false
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 200Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: openebs-hostpath
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+
+coreDns:
+  enabled: true
+  service:
+    selector:
+      k8s-app: kube-dns
+
+kubeEtcd:
+  enabled: false
+  service:
+    selector:
+      tier: control-plane
+      component: etcd
+  serviceMonitor:
+    scheme: https
+    caFile: /etc/prometheus/secrets/etcd-certs/ca.crt
+    certFile: /etc/prometheus/secrets/etcd-certs/client.crt
+    keyFile: /etc/prometheus/secrets/etcd-certs/client.key
+
+kubeScheduler:
+  enalbed: true
+  service:
+    selector:
+      tier: control-plane
+      component: kube-scheduler
+
+kubelet:
+  enabled: true
+  namepsace: kube-system
+
+#kubeControllerManager:
+#  enabled: true
+#  service:
+#    selector:
+#      component: kube-controller-manager
