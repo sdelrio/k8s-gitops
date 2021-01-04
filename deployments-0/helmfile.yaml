@@ -27,33 +27,33 @@ releases:
 #  * NGinx for external usage (internet)
 #  * CertManager for ssl certificates for external usage
 
-- name: metallb-config
-  chart: chartcenter/incubator/raw
-  namespace: metallb-system
-  createNamespace: true
-  wait: true
-  version: "0.2.5"
-  values:
-    - environments/{{ .Environment.Name }}/metallb/resources.yaml
-    - environments/all/metallb/templates.yaml.gotmpl
-  labels:
-    tier: loadbalancer
-    scope: metalconfig
-
-- name: metallb-system
-  namespace: metallb-system
-  createNamespace: true
-  wait: true
-  chart: ./metallb
-  hooks:
-    - events:
-        - prepare
-        - cleanup
-      command: "./helmify.sh"
-      args: ["{{`{{if eq .Event.Name \"prepare\"}}build{{else}}clean{{end}}`}}", "{{`{{.Release.Chart}}`}}", "{{`{{.Environment.Name}}`}}"]
-  labels:
-    tier: loadbalancer
-    scope: metalsystem
+#- name: metallb-config
+#  chart: chartcenter/incubator/raw
+#  namespace: metallb-system
+#  createNamespace: true
+#  wait: true
+#  version: "0.2.5"
+#  values:
+#    - environments/{{ .Environment.Name }}/metallb/resources.yaml
+#    - environments/all/metallb/templates.yaml.gotmpl
+#  labels:
+#    tier: loadbalancer
+#    scope: metalconfig
+#
+#- name: metallb-system
+#  namespace: metallb-system
+#  createNamespace: true
+#  wait: true
+#  chart: ./metallb
+#  hooks:
+#    - events:
+#        - prepare
+#        - cleanup
+#      command: "./helmify.sh"
+#      args: ["{{`{{if eq .Event.Name \"prepare\"}}build{{else}}clean{{end}}`}}", "{{`{{.Release.Chart}}`}}", "{{`{{.Environment.Name}}`}}"]
+#  labels:
+#    tier: loadbalancer
+#    scope: metalsystem
 
 - name: cert-manager
   namespace: cert-manager
@@ -128,7 +128,7 @@ releases:
     - environments/{{ .Environment.Name }}/openebs/sc-openebs-hostpath.yaml
   labels:
     tier: storage
-    scope: openebs-sc
+    scope: openebs
 
 - name: longhorn
   namespace: longhorn
@@ -177,11 +177,11 @@ releases:
     tier: backup
     scope: velero
 
-#
 # MONITORING
 # * prometheus
 # * grafana
 # * alertmanager
+# * blackbox-exporter
 
 - name: monitoring
   namespace: monitoring
@@ -198,6 +198,21 @@ releases:
     tier: monitoring
     scope: prometheus-stack
 
+- name: blackbox
+  namespace: monitoring
+  createNamespace: true
+  #disableValidation: true
+  # Set disableOpenAPIValidation to true if your chart contains CRDs or install-crd hooks.
+  # * https://github.com/roboll/helmfile/issues/1124
+  #disableOpenAPIValidation: true
+  chart: chartcenter/prometheus-community/prometheus-blackbox-exporter
+  version: '{{ .Values | get "blackbox_exporter_version" "4.10.1" }}'
+  values:
+    - environments/{{ .Environment.Name }}/blackbox-exporter/values.yaml
+  labels:
+    tier: monitoring
+    scope: blackbox-exporter
+
 environments:
   dev:
     secrets:
@@ -210,7 +225,7 @@ environments:
       - openebs_version: '2.3.1'
       - longhorn_version: '1.0.2'
       - velero_version: '2.12.17'
-      - prometheus_stack_version: '12.7.0'
+      - prometheus_stack_version: '12.8.0'
   nuc:
     secrets:
       - environments/nuc/secrets.yaml
