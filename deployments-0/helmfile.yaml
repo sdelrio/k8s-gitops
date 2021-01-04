@@ -27,33 +27,33 @@ releases:
 #  * NGinx for external usage (internet)
 #  * CertManager for ssl certificates for external usage
 
-#- name: metallb-config
-#  chart: chartcenter/incubator/raw
-#  namespace: metallb-system
-#  createNamespace: true
-#  wait: true
-#  version: "0.2.5"
-#  values:
-#    - environments/{{ .Environment.Name }}/metallb/resources.yaml
-#    - environments/all/metallb/templates.yaml.gotmpl
-#  labels:
-#    tier: loadbalancer
-#    scope: metalconfig
-#
-#- name: metallb-system
-#  namespace: metallb-system
-#  createNamespace: true
-#  wait: true
-#  chart: ./metallb
-#  hooks:
-#    - events:
-#        - prepare
-#        - cleanup
-#      command: "./helmify.sh"
-#      args: ["{{`{{if eq .Event.Name \"prepare\"}}build{{else}}clean{{end}}`}}", "{{`{{.Release.Chart}}`}}", "{{`{{.Environment.Name}}`}}"]
-#  labels:
-#    tier: loadbalancer
-#    scope: metalsystem
+- name: metallb-config
+  chart: chartcenter/incubator/raw
+  namespace: metallb-system
+  createNamespace: true
+  wait: true
+  version: "0.2.5"
+  values:
+    - environments/{{ .Environment.Name }}/metallb/resources.yaml
+    - environments/all/metallb/templates.yaml.gotmpl
+  labels:
+    tier: loadbalancer
+    scope: metalconfig
+
+- name: metallb-system
+  namespace: metallb-system
+  createNamespace: true
+  wait: true
+  chart: ./metallb
+  hooks:
+    - events:
+        - prepare
+        - cleanup
+      command: "./helmify.sh"
+      args: ["{{`{{if eq .Event.Name \"prepare\"}}build{{else}}clean{{end}}`}}", "{{`{{.Release.Chart}}`}}", "{{`{{.Environment.Name}}`}}"]
+  labels:
+    tier: loadbalancer
+    scope: metalsystem
 
 - name: cert-manager
   namespace: cert-manager
@@ -201,10 +201,6 @@ releases:
 - name: blackbox
   namespace: monitoring
   createNamespace: true
-  #disableValidation: true
-  # Set disableOpenAPIValidation to true if your chart contains CRDs or install-crd hooks.
-  # * https://github.com/roboll/helmfile/issues/1124
-  #disableOpenAPIValidation: true
   chart: chartcenter/prometheus-community/prometheus-blackbox-exporter
   version: '{{ .Values | get "blackbox_exporter_version" "4.10.1" }}'
   values:
