@@ -128,7 +128,7 @@ releases:
     - environments/{{ .Environment.Name }}/openebs/sc-openebs-hostpath.yaml
   labels:
     tier: storage
-    scope: openebs-sc
+    scope: openebs
 
 - name: longhorn
   namespace: longhorn
@@ -177,11 +177,11 @@ releases:
     tier: backup
     scope: velero
 
-#
 # MONITORING
 # * prometheus
 # * grafana
 # * alertmanager
+# * blackbox-exporter
 
 - name: monitoring
   namespace: monitoring
@@ -198,6 +198,17 @@ releases:
     tier: monitoring
     scope: prometheus-stack
 
+- name: blackbox
+  namespace: monitoring
+  createNamespace: true
+  chart: chartcenter/prometheus-community/prometheus-blackbox-exporter
+  version: '{{ .Values | get "blackbox_exporter_version" "4.10.1" }}'
+  values:
+    - environments/{{ .Environment.Name }}/blackbox-exporter/values.yaml
+  labels:
+    tier: monitoring
+    scope: blackbox-exporter
+
 environments:
   dev:
     secrets:
@@ -210,7 +221,7 @@ environments:
       - openebs_version: '2.3.1'
       - longhorn_version: '1.0.2'
       - velero_version: '2.12.17'
-      - prometheus_stack_version: '12.7.0'
+      - prometheus_stack_version: '12.8.0'
   nuc:
     secrets:
       - environments/nuc/secrets.yaml
