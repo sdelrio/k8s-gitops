@@ -6,6 +6,7 @@
   tasks:
     - name: Install k8s apt module dependencies
       apt:
+        cache_valid_time: 3600
         name:
           - python3-yaml
           - python3-pip
