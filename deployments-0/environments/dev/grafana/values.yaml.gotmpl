@@ -1,0 +1,35 @@
+
+grafana.ini:
+  server:
+    domain: grafana.dev.{{ .Values.dns_domain_1 }}
+    root_url: "%(protocol)s://%(domain)s/grafana"
+    serve_from_sub_path: true
+
+plugins:
+  - grafana-piechart-panel
+
+#datasources: {}
+
+replicas: 1
+ingress:
+  enabled: false
+  hosts:
+  hosts:
+    - host: grafana.dev.{{ .Values.dns_domain_1 }}
+      paths: [ "/" ]
+  tls:
+    - hosts:
+        - grafana.dev.{{ .Values.dns_domain_1 }}
+persistence:
+  enabled: true
+  persistence:
+    size: 2Gi
+    storageClassName: openebs-hostpath
+
+ldap:
+  enabled: false
+
+#serviceMonitor:
+#  enabled: true
+#  namespace: monitoring
+

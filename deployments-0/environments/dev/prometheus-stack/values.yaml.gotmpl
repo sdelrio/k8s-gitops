@@ -9,10 +9,11 @@ grafana:
       - grafana.dev.{{ .Values.dns_domain_1 }}
     tls:
       - hosts:
-          - grafan.dev.{{ .Values.dns_domain_1 }}
+          - grafana.dev.{{ .Values.dns_domain_1 }}
   adminPassword: {{ .Values.grafana_admin_password }}
   persistence:
     enabled: true
+    size: 100Mi
   additionalDataSources:
     - name: Loki
       type: loki
@@ -27,8 +28,19 @@ prometheus:
   enabled: true
   prometheusSpec:
     replicas: 1
-    retentionSize: 20Gi
-    retention: 30d
+    secrets:
+      - etcd-certs
+    retentionSize: 4GB
+    retention: 3d
+
+    resources:
+      requests:
+        cpu: 500m
+        memory: 400Mi
+      limits:
+        cpu: 1000m
+        memory: 800Mi
+
     storageSpec:
       volumeClaimTemplate:
         spec:
@@ -36,78 +48,66 @@ prometheus:
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 20Gi
-  additionalScrapeConfigs:
-    - job_name: 'blackboxssh'
-      metrics_path: /probe
-      params:
-        module: [ssh_banner]
-      static_configs:
-        - targets:
-          - 192.168.1.200
-          - 192.168.1.201
-          - 192.168.1.202
-      relabel_configs:
-        # Ensure port is 5222, pass as URL parameter
-        - source_labels: [__address__]
-          regex: (.*)(:.*)?
-          replacement: ${1}:22
-          target_label: __param_target
-        # Make instance label the target
-        - source_labels: [__param_target]
-          target_label: instance
-        # Actually talk to the blackbox exporter though
-        - target_label: __address__
-          replacement: blackbox-prometheus-blackbox-exporter:9115 # Blackbox exporter."
-    - job_name: blackbox
-      metrics_path: /probe
-      params:
-        module: [http_2xx]
-      static_configs:
-        - targets:
-          - https://www.lorien.cloud/
-          - https://www.lorien.cloud/grimoire/
-          - https://www.lorien.cloud/rules/
-          - https://www.lorien.cloud/brigada/
-      relabel_configs:
-        - source_labels: [__address__]
-          target_label: __param_target
-        - source_labels: [__param_target]
-          target_label: instance
-        - target_label: __address__  # Comment 1
-          replacement: blackbox-prometheus-blackbox-exporter:9115 # Blackbox exporter."
-    - job_name: blackboxtcp
-      metrics_path: /probe
-      params:
-        module: [ts_banner]
-      static_configs:
-        - targets:
-          - ts.torrasque.tk:10011
-      relabel_configs:
-        - source_labels: [__address__]
-          target_label: __param_target
-        - source_labels: [__param_target]
-          target_label: instance
-        - target_label: __address__
-          replacement: blackbox-prometheus-blackbox-exporter:9115 # Blackbox exporter."
-
-#    retentionSize: 5Gi
-#    retention: 5d
-#    resources:
-#      requests:
-#        cpu: 500m
-#        memory: 400Mi
-#      limits:
-#        cpu: 1000m
-#        memory: 800Mi
-#    storageSpec:
-#      volumeClaimTemplate:
-#        spec:
-#          storageClassName: openebs-hostpath
-#          accessModes: ["ReadWriteOnce"]
-#          resources:
-#            requests:
-#              storage: 5Gi
+              storage: 5Gi
+#    additionalScrapeConfigs:
+#      - job_name: 'blackboxssh'
+#        metrics_path: /probe
+#        params:
+#          module: [ssh_banner]
+#        static_configs:
+#          - targets:
+#            - 192.168.1.200
+#            - 192.168.1.201
+#            - 192.168.1.202
+#        relabel_configs:
+#          # Ensure port is 22, pass as URL parameter
+#          - source_labels: [__address__]
+#            regex: (.*)(:.*)?
+#            replacement: ${1}:22
+#            target_label: __param_target
+#          # Make instance label the target
+#          - source_labels: [__param_target]
+#            target_label: instance
+#          # Actually talk to the blackbox exporter though
+#          - target_label: __address__
+#            replacement: blackbox-prometheus-blackbox-exporter:9115 # Blackbox exporter."
+#      - job_name: blackbox
+#        metrics_path: /probe
+#        params:
+#          module: [http_2xx]
+#        static_configs:
+#          - targets:
+#            - https://www.{{ .Values.dns_domain_1 }}/
+#            - https://www.{{ .Values.dns_domain_1 }}/grimoire/
+#            - https://www.{{ .Values.dns_domain_1 }}/rules/
+#            - https://www.{{ .Values.dns_domain_1 }}/brigada/
+#            - https://torrasque.internal.{{ .Values.dns_domain_1 }}/
+#            - https://torrasque.internal.{{ .Values.dns_domain_1 }}/grimoire/
+#            - https://torrasque.internal.{{ .Values.dns_domain_1 }}/rules/
+#            - https://torrasque.internal.{{ .Values.dns_domain_1 }}/brigada/
+#            - https://grafana.internal.{{ .Values.dns_domain_1 }}/
+#            - https://vault.dev.{{ .Values.dns_domain_1 }}/
+#        relabel_configs:
+#          - source_labels: [__address__]
+#            target_label: __param_target
+#          - source_labels: [__param_target]
+#            target_label: instance
+#          - target_label: __address__  # Comment 1
+#            replacement: blackbox-prometheus-blackbox-exporter:9115 # Blackbox exporter."
+#      - job_name: blackboxtcp
+#        metrics_path: /probe
+#        params:
+#          module: [ts_banner]
+#        static_configs:
+#          - targets:
+#            - ts.internal.{{ .Values.dns_domain_1 }}:10011
+#        relabel_configs:
+#          - source_labels: [__address__]
+#            target_label: __param_target
+#          - source_labels: [__param_target]
+#            target_label: instance
+#          - target_label: __address__
+#            replacement: blackbox-prometheus-blackbox-exporter:9115 # Blackbox exporter."
 #    apiserverConfig: {}
 #      host:  # Host of apiserver. A valid string consisting of a hostname or IP followed by an optional port number 	string 	true
 #      basicAuth:  # BasicAuth allow an endpoint to authenticate over basic authentication 	*BasicAuth 	false
@@ -121,8 +121,8 @@ prometheusOperator:
     enabled: false
     patch:
       enabled: false
-    tlsProxy:
-      enabled: false
+  tls:
+    enabled: false
 
   resources:
     limits:
@@ -158,15 +158,20 @@ kubeEtcd:
   serviceMonitor:
     scheme: https
     insecureSkipVerify: true
-    certFile: "/etc/prometheus/secrets/etcd-cert/etcd.pem"
-    keyFile: "/etc/prometheus/secrets/etcd-cert/etcd-key.pem"
+    caFile:  "/etc/prometheus/secrets/etcd-certs/ca.crt"
+    certFile: "/etc/prometheus/secrets/etcd-certs/client.crt"
+    keyFile: "/etc/prometheus/secrets/etcd-certs/client.key"
 
 kubeScheduler:
-  enalbed: true
+  enabled: true
   service:
+    targetPort: 10257
     selector:
       tier: control-plane
       component: kube-scheduler
+  serviceMonitor:
+    https: true
+    insecureSkipVerify: true
 
 kubelet:
   enabled: true
@@ -175,5 +180,16 @@ kubelet:
 kubeControllerManager:
   enabled: true
   service:
+    targetPort: 10257
     selector:
       component: kube-controller-manager
+  serviceMonitor:
+    https: true
+    insecureSkipVerify: true
+
+kubeProxy:
+  enabled: true
+  targetPort: 10249
+  service:
+    selector:
+      k8s-app: kube-proxy
