@@ -26,7 +26,9 @@ calico_node_cpu_limit: 600m
 # You can set MTU value here. If left undefined or empty, it will
 # not be specified in calico CNI config, so Calico will use built-in
 # defaults. The value should be a number, not a string.
-calico_mtu: "{{ prepare_mtu }}"
+#calico_mtu: "{{ prepare_mtu }}"
+calico_mtu: 1500
+calico_veth_mtu: 1480
 
 # Advertise Cluster IPs
 # calico_advertise_cluster_ips: true
@@ -56,10 +58,10 @@ calico_mtu: "{{ prepare_mtu }}"
 
 # IP in IP and VXLAN is mutualy exclusive modes.
 # set IP in IP encapsulation mode: "Always", "CrossSubnet", "Never"
-# calico_ipip_mode: 'Always'
+calico_ipip_mode: 'Always'
 
 # set VXLAN encapsulation mode: "Always", "CrossSubnet", "Never"
-# calico_vxlan_mode: 'Never'
+#calico_vxlan_mode: 'Never'
 
 # If you want to use non default IP_AUTODETECTION_METHOD for calico node set this option to one of:
 # * can-reach=DESTINATION

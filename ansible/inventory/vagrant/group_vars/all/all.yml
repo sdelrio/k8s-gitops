@@ -92,3 +92,7 @@ deploy_container_engine: true
 ## Set Pypi repo and cert accordingly
 # pyrepo_index: https://pypi.example.com/simple
 # pyrepo_cert: /etc/ssl/certs/ca-certificates.crt
+
+## Enable metrics for prometheus monitoring on kube-proxy
+kube_proxy_metrics_bind_address: '0.0.0.0:10249'
+
