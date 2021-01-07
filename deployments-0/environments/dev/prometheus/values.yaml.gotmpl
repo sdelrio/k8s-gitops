@@ -1,0 +1,87 @@
+grafana:
+  enabled: true
+  adminPassword: prom-operator
+  plugins:
+    - grafana-piechart-panel
+
+prometheus:
+  prometheusSpec:
+    replicas: 1
+    retentionSize: 1GB
+    retention: 5d
+    resources:
+      requests:
+        cpu: 500m
+        memory: 400Mi
+      limits:
+        cpu: 1000m
+        memory: 800Mi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: openebs-hostpath
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 5Gi
+#    apiserverConfig: {}
+#      host:  # Host of apiserver. A valid string consisting of a hostname or IP followed by an optional port number 	string 	true
+#      basicAuth:  # BasicAuth allow an endpoint to authenticate over basic authentication 	*BasicAuth 	false
+#      bearerToken: # Bearer token for accessing apiserver. 	string 	false
+#      bearerTokenFile: # File to read bearer token for accessing apiserver. 	string 	false
+#      tlsConfig:  # TLS Config to use for accessing apiserver. 	*TLSConfig 	false
+
+prometheusOperator:
+  resources:
+    limits:
+      cpu: 200m
+      memory: 200Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: openebs-hostpath
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+
+coreDns:
+  enabled: true
+  service:
+    selector:
+      k8s-app: kube-dns
+
+kubeEtcd:
+  enabled: false
+  service:
+    selector:
+      tier: control-plane
+      component: etcd
+  serviceMonitor:
+    scheme: https
+    caFile: /etc/prometheus/secrets/etcd-certs/ca.crt
+    certFile: /etc/prometheus/secrets/etcd-certs/client.crt
+    keyFile: /etc/prometheus/secrets/etcd-certs/client.key
+
+kubeScheduler:
+  enalbed: true
+  service:
+    selector:
+      tier: control-plane
+      component: kube-scheduler
+
+kubelet:
+  enabled: true
+  namepsace: kube-system
+
+#kubeControllerManager:
+#  enabled: true
+#  service:
+#    selector:
+#      component: kube-controller-manager 
