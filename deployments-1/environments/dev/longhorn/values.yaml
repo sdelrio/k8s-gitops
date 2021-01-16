@@ -1,6 +1,7 @@
 defaultSettings:
 # Default Data Path, default /var/lib/longhorn/
   defaultDataPath: /var/lib/longhorn
+  allowVolumeCreationWithDegradedAvailability: false
 # Example: s3://backupbucket@us-east-1/backupstore
 #  backupTarget: ~
 # Example: s3-secret
