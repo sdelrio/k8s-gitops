@@ -2,6 +2,7 @@ defaultSettings:
 ## Default Data Path, default /var/lib/longhorn/
   defaultDataPath: /openebs/longhorn
   createDefaultDiskLabeledNodes: true
+  allowVolumeCreationWithDegradedAvailability: false
 ## The default number of replicas when creating the volume from Longhorn UI.
 ## Example: s3://backupbucket@us-east-1/backupstore
 ##  backupTarget: ~
