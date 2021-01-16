@@ -43,3 +43,5 @@ prepare_additional_disk: true
 prepare_additional_disk_directories:
   - /var/lib/etcd
 prepare_additional_disks_force_format: true
+
+etcd_backup_retention_count: 20

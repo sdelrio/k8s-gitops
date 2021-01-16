@@ -50,6 +50,7 @@ $local_path_provisioner_claim_root ||= "/opt/local-path-provisioner/"
 $libvirt_nested ||= false
 
 $playbook ||= "playbooks/install/k8s.yml"
+#$playbook ||= "playbooks/install/k3s.yml"
 
 host_vars = {}
 

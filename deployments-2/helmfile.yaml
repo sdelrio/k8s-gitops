@@ -1,0 +1,30 @@
+repositories:
+  - name: chartcenter
+    url: https://repo.chartcenter.io
+
+releases:
+
+#  Home Assitant
+
+- name: home-assistant
+  chart: chartcenter/k8s-at-home/home-assistant
+  version: '{{ .Values | get "home_assistant_version" "5.4.1" }}'
+  namespace: home-assistant
+  createNamespace: true
+  values:
+    - environments/{{ .Environment.Name }}/home-assistant/values.yaml.gotmpl
+  labels:
+    tier: home
+    scope: assistant
+
+environments:
+  dev:
+    secrets:
+      - ../deployments-1/environments/dev/secrets.yaml
+    values:
+      - home_assistant_version: '5.4.1'
+  nuc:
+    secrets:
+      - ../deployments-1/environments/nuc/secrets.yaml
+    values:
+      - home_assistant_version: '5.4.1'

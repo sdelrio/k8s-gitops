@@ -1,0 +1,8 @@
+apiVersion: openebs.io/v1
+kind: StoragePool
+metadata:
+  generation: 1
+  name: default
+  selfLink: /apis/openebs.io/v1alpha1/storagepools/default
+spec:
+  path: /openebs/default
