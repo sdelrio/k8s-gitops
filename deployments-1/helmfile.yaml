@@ -206,6 +206,21 @@ releases:
     tier: monitoring
     scope: blackbox-exporter
 
+#  AUTO LABEL NODES for usb/pci devices
+#  * node-feature-discovery
+
+- name: nf-discovery
+  namespace: nf-discovery
+  createNamespace: true
+  wait: false
+  chart: chartcenter/k8s-at-home/node-feature-discovery
+  version: '{{ .Values | get "node_feature_discovery" "2.0.0" }}'
+  values:
+    - environments/{{ .Environment.Name }}/nf-discovery/values.yaml
+  labels:
+    tier: discovery
+    scope: nf-discovery
+
 environments:
   dev:
     secrets:
