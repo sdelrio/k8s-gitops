@@ -1,0 +1,71 @@
+#image:
+#  tag: 2021.1.4
+
+common:
+  ingress:
+    enabled: true
+    annotations:
+      nginx.org/websocket-services: home-assistant
+      kubernetes.io/ingress.class: nginx-external
+    hosts:
+      - host: assistant.internal.{{ .Values.dns_domain_1 }}
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - hosts:
+        - assistant.internal.{{ .Values.dns_domain_1 }}
+
+env:
+  TZ: "Europe/Madrid"
+
+hostNetwork: true
+dnsPolicy: ClusterFirstWithHostNet
+
+prometheus:
+  serviceMonitor:
+    enabled: true
+
+persistence:
+  config:
+    enabled: true
+#    storageClass: "longhorn-r2"
+    accessMode: ReadWriteOnce
+    size: "1Gi"
+
+podAnnotations:
+  backup.velero.io/backup-volumes: config
+
+addons:
+  codeserver:
+    enabled: true
+    image:
+      repository: codercom/code-server
+      tag: 3.8.0
+    workingDir: "/config"
+    args:
+    - --auth
+    - "none"
+    - --user-data-dir
+    - "/config/.vscode"
+    - --extensions-dir
+    - "/config/.vscode"
+    ingress:
+      enabled: true
+      hosts:
+      - host: hass-config.internal.{{ .Values.dns_domain_1 }}
+        paths:
+        - path: /
+          pathType: Prefix
+      tls:
+      - hosts:
+        - hass-config.internal.{{ .Values.dns_domain_1 }}
+    volumeMounts:
+    - name: config
+      mountPath: /config
+resources:
+  requests:
+    cpu: 256m
+    memory: 500Mi
+  limits:
+    memory: 1000Mi

@@ -1,0 +1,17 @@
+---
+
+- hosts: all
+  any_errors_fatal: true
+  become: true
+  roles:
+    - geerlingguy.ntp
+
+- import_playbook: ../../kubespray/cluster.yml
+
+- import_playbook:  ../../playbooks/install/manage-k8s-dependencies.yml
+
+- import_playbook:  ../../playbooks/install/storage.yml
+  when: (install_ceph is defined) and (install_ceph)
+
+- import_playbook: ./monitoring/monitoring-etcd-kubespray.yml
+

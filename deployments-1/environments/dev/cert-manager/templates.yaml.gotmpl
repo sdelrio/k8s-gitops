@@ -1,0 +1,99 @@
+templates:
+- |
+  apiVersion: cert-manager.io/v1
+  kind: ClusterIssuer
+  metadata:
+    name: letsencrypt-staging
+  spec:
+    acme:
+      # Email to use in ACME registration
+      email: "{{ .Values.cert_manager_email }}"
+      privateKeySecretRef:
+        name: letsencrypt-staging
+      # The ACME server URL
+      server: https://acme-staging-v02.api.letsencrypt.org/directory
+      # Enable the HTTP-01 challenge provider
+      solvers:
+      - http01:
+          ingress:
+            class: nginx-external
+- |
+  apiVersion: cert-manager.io/v1
+  kind: ClusterIssuer
+  metadata:
+    name: letsencrypt-production
+  spec:
+    acme:
+      # Email to use in ACME registration
+      email: "{{ .Values.cert_manager_email }}"
+      privateKeySecretRef:
+        name: letsencrypt-prod
+      # The ACME server URL
+      server: https://acme-v02.api.letsencrypt.org/directory
+      # Enable the HTTP-01 challenge provider
+      solvers:
+      - http01:
+          ingress:
+            class: nginx-external
+- |
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: cloudflare-api-key
+  stringData:
+    key: {{ .Values.cf_token }}
+- |
+  apiVersion: cert-manager.io/v1
+  kind: ClusterIssuer
+  metadata:
+    name: letsencrypt-staging-dns
+  spec:
+    acme:
+      # Email to use in ACME registration
+      email: {{ .Values.cert_manager_email }}
+      privateKeySecretRef:
+        name: letsencrypt-staging-dns
+      # The ACME server URL
+      server: https://acme-staging-v02.api.letsencrypt.org/directory
+      # Enable the DNS-01 challenge provider
+      solvers:
+      - dns01:
+          cloudflare:
+            email: {{ .Values.cf_email }}
+            apiTokenSecretRef:
+              name: cloudflare-api-key
+              key: key
+- |
+  apiVersion: cert-manager.io/v1
+  kind: ClusterIssuer
+  metadata:
+    name: letsencrypt-production-dns
+  spec:
+    acme:
+      # Email to use in ACME registration
+      email: {{ .Values.cert_manager_email }}
+      privateKeySecretRef:
+        name: letsencrypt-production-dns
+      # The ACME server URL
+      server: https://acme-v02.api.letsencrypt.org/directory
+      # Enable the DNS-01 challenge provider
+      solvers:
+      - dns01:
+          cloudflare:
+            email: {{ .Values.cf_email }}
+            apiTokenSecretRef:
+              name: cloudflare-api-key
+              key: key
+- |
+  apiVersion: cert-manager.io/v1
+  kind: Certificate
+  metadata:
+    name: acme-crt
+  spec:
+    secretName: acme-crt-secret
+    issuerRef:
+      name: letsencrypt-production-dns
+      kind: ClusterIssuer
+    dnsNames:
+    - '*.vm.{{ .Values.dns_domain_1 }}'
+    - '*.dev.{{ .Values.dns_domain_1 }}'

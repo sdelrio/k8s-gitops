@@ -1,0 +1,7 @@
+---
+# https://github.com/kubernetes-sigs/kubespray/blob/master/docs/large-deployments.md
+# kubespray/docs/downloads.md
+# support only for docker
+#download_run_once: true
+# support only for docker
+#download_localhost: true

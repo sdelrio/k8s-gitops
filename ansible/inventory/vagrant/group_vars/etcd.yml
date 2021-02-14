@@ -1,0 +1,47 @@
+---
+## Etcd auto compaction retention for mvcc key value store in hour
+# etcd_compaction_retention: 0
+
+## Set level of detail for etcd exported metrics, specify 'extensive' to include histogram metrics.
+# etcd_metrics: basic
+
+## Etcd is restricted by default to 512M on systems under 4GB RAM, 512MB is not enough for much more than testing.
+## Set this if your etcd nodes have less than 4GB but you want more RAM for etcd. Set to 0 for unrestricted RAM.
+# etcd_memory_limit: "512M"
+
+## Etcd has a default of 2G for its space quota. If you put a value in etcd_memory_limit which is less than
+## etcd_quota_backend_bytes, you may encounter out of memory terminations of the etcd cluster. Please check
+## etcd documentation for more information.
+# etcd_quota_backend_bytes: "2G"
+
+### ETCD: disable peer client cert authentication.
+# This affects ETCD_PEER_CLIENT_CERT_AUTH variable
+# etcd_peer_client_auth: true
+
+## Settings for etcd deployment type
+etcd_deployment_type: host
+
+# etcd_heartbeat_interval: "250"
+etcd_heartbeat_interval: "600"
+# etcd_election_timeout: "5000"
+etcd_election_timeout: "10000"
+
+etcd_snapshot_count: "10000"
+#etcd_snapshot_count: "5000"
+
+# Use system reserved to reserve etcd cpu and ram
+system_reserved: true
+## Needed for etcd3
+system_memory_reserved: 200M
+system_cpu_reserved: 500m
+## Needed for master hosts
+system_master_memory_reserved: 200M
+system_master_cpu_reserved: 500m
+
+
+prepare_additional_disk: true
+prepare_additional_disk_directories:
+  - /var/lib/etcd
+prepare_additional_disks_force_format: true
+
+etcd_backup_retention_count: 20

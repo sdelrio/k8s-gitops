@@ -1,0 +1,32 @@
+defaultSettings:
+## Default Data Path, default /var/lib/longhorn/
+  defaultDataPath: /openebs/longhorn
+  createDefaultDiskLabeledNodes: true
+  allowVolumeCreationWithDegradedAvailability: false
+## The default number of replicas when creating the volume from Longhorn UI.
+## Example: s3://backupbucket@us-east-1/backupstore
+##  backupTarget: ~
+## Example: s3-secret
+##  backupTargetCredentialSecret: ~
+#
+##  replicaSoftAntiAffinity: false
+##  storageOverProvisioningPercentage: 200
+##  storageMinimalAvailablePercentage: 25
+##  upgradeChecker: true
+##  guaranteedEngineCPU: 0.25
+#
+#  priorityClass: high-priority
+#
+persistence:
+  defaultClass: true
+  defaultClassReplicaCount: 2
+  reclaimPolicy: Delete
+
+resources: {}
+# On Helm chart 1.0.2 resources are not defined in the templates
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 100m
+#    memory: 128Mi

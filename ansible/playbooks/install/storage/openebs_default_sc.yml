@@ -1,0 +1,10 @@
+---
+- hosts: kube-master[0]
+  become: true
+  gather_facts: false
+  tasks:
+    - name: "Set openebs-hostpath as default storage class"
+      command: "kubectl patch storageclass openebs-hostpah -p '{\"metadata\":{\"annotations\":{\"storageclass.kubernetes.io/is-default-class\": \"true\"}}}'"
+      register: kubectl_result
+      changed_when: '"(no change)" not in kubectl_result.stdout'
+

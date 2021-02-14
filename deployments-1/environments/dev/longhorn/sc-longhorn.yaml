@@ -1,0 +1,62 @@
+resources:
+- kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-r3
+  provisioner: driver.longhorn.io
+  allowVolumeExpansion: true
+  parameters:
+    numberOfReplicas: "3"
+    staleReplicaTimeout: "2880" # 48 hours in minutes
+    fromBackup: ""
+#  diskSelector: "ssd,fast"
+#  nodeSelector: "storage,fast"
+#  recurringJobs: '[{"name":"snap", "task":"snapshot", "cron":"*/1 * * * *", "retain":1},
+#                   {"name":"backup", "task":"backup", "cron":"*/2 * * * *", "retain":1,
+#                    "labels": {"interval":"2m"}}]'
+
+- kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-r2
+  provisioner: driver.longhorn.io
+  allowVolumeExpansion: true
+  parameters:
+    numberOfReplicas: "2"
+    staleReplicaTimeout: "2880" # 48 hours in minutes
+    fromBackup: ""
+
+- kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-local-r2
+  provisioner: driver.longhorn.io
+  allowVolumeExpansion: true
+  parameters:
+    numberOfReplicas: "2"
+    dataLocality: "best-effort"
+    staleReplicaTimeout: "2880" # 48 hours in minutes
+    fromBackup: ""
+
+- kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-r1
+  provisioner: driver.longhorn.io
+  allowVolumeExpansion: true
+  parameters:
+    numberOfReplicas: "1"
+    staleReplicaTimeout: "2880" # 48 hours in minutes
+    fromBackup: ""
+
+- kind: StorageClass
+  apiVersion: storage.k8s.io/v1
+  metadata:
+    name: longhorn-local-r1
+  provisioner: driver.longhorn.io
+  allowVolumeExpansion: true
+  parameters:
+    numberOfReplicas: "1"
+    dataLocality: "best-effort"
+    staleReplicaTimeout: "2880" # 48 hours in minutes
+    fromBackup: ""

@@ -1,0 +1,9 @@
+---
+#  ansible-playbook -i inventory/rock64-cluster/host.ini -K --limit {{ hosts }} -e 'serial=100%' prepare.yml
+
+- hosts: all
+  any_errors_fatal: true
+  become: true
+  serial: "{{ serial | default(1) }}"
+  roles:
+    - prepare

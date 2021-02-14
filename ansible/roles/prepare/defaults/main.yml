@@ -1,0 +1,25 @@
+---
+prepare_public_keys: []
+
+prepare_username: "{{ lookup('env', 'USER') }}"
+
+prepare_unused_services:
+  - wpa_supplicant
+
+prepare_basic_packages:
+  - nfs-common
+  - ca-certificates
+  - parted
+  - vim
+
+prepare_sysctl:
+  # Since kernel 5.4 default is 4096, in earlier kernels the default value is 128.
+  - key: net.core.somaxconn
+    value: 4096
+
+prepare_additional_disk: false
+prepare_additional_disk_dev: /dev/sda
+prepare_additional_disks_force_format: false
+
+prepare_domain: localdomain
+prepare_mtu: 1500

@@ -1,0 +1,233 @@
+repositories:
+  - name: chartcenter
+    url: https://repo.chartcenter.io
+
+releases:
+
+#  VAULT + SECRETS OPERATOR
+#  * VAULT
+#  * Secrets operator
+#  https://github.com/ricoberger/vault-secrets-operator
+
+#- name: vault
+#  chart: chartcenter/hashicorp/vault
+#  version: '{{ .Values | get "vault_version" "0.8.0" }}'
+#  namespace: vault
+#  createNamespace: true
+#  wait: true
+#  values:
+#    - environments/{{ .Environment.Name }}/vault/values.yaml.gotmpl
+#  labels:
+#    tier: secrets
+#    scope: vault
+
+#  LB + INGRESS CONTROLLERS
+#  * NGinx for internal usage (lan)
+#  * NGinx for external usage (internet)
+#  * CertManager for ssl certificates for external usage
+
+- name: cert-manager
+  namespace: cert-manager
+  createNamespace: true
+  wait: true
+  chart: chartcenter/jetstack/cert-manager
+  version: '{{ .Values | get "certmanager_version" "v1.0.4" }}'
+  values:
+    - installCRDs: true
+  labels:
+    tier: cert
+    scope: manager
+
+- name: nginx-internal
+  chart: chartcenter/kubernetes-ingress-nginx/ingress-nginx
+  namespace: kube-system
+  createNamespace: true
+  wait: false
+  version: '{{ .Values | get "nginx_int_version" "3.0.8" }}'
+  values:
+    - environments/{{ .Environment.Name }}/nginx/internal.yaml
+  labels:
+    tier: ingress
+    scope: internal
+
+- name: nginx-external
+  chart: chartcenter/kubernetes-ingress-nginx/ingress-nginx
+  namespace: kube-system
+  createNamespace: true
+  wait: false
+  version: '{{ .Values | get "nginx_ext_version" "3.0.8" }}'
+  values:
+    - environments/{{ .Environment.Name }}/nginx/external.yaml
+  labels:
+    tier: ingress
+    scope: external
+
+- name: nginx-dashboards
+  chart: center/incubator/raw
+  namespace: monitoring
+  createNamespace: true
+  wait: false
+  version: '{{ .Values | get "raw_version" "0.2.5" }}'
+  values:
+    - environments/{{ .Environment.Name }}/nginx/nginx-dashboards.yaml.gotmpl
+  labels:
+    tier: ingress
+    scope: dashboards
+
+# If we put this just below the cert mangager the crd ar not ready
+# and will generate an error
+
+- name: cert-issuers
+  chart: chartcenter/incubator/raw
+  namespace: cert-manager
+  version: "0.2.5"
+  disableValidation: true
+  values:
+    - environments/{{ .Environment.Name }}/cert-manager/templates.yaml.gotmpl
+  labels:
+    tier: cert
+    scope: issuers
+
+#  STORAGE
+#  * OpenEBS localPV for high IOPs or clustered apps
+#  * Longorn clustered storaged
+#  * Velero for backup
+
+- name: hostpath
+  namespace: openebs
+  createNamespace: true
+  wait: true
+  chart: chartcenter/openebs/openebs
+  version: '{{ .Values | get "openebs_version" "2.2.1" }}'
+  values:
+    - environments/{{ .Environment.Name }}/openebs/values.yaml
+  labels:
+    tier: storage
+    scope: openebs
+
+- name: hostpath-sc
+  chart: chartcenter/incubator/raw
+  namespace: cert-manager
+  version: "0.2.5"
+#  disableValidation: true
+  values:
+    - environments/{{ .Environment.Name }}/openebs/sc-openebs-hostpath.yaml
+  labels:
+    tier: storage
+    scope: openebs-sc
+
+- name: longhorn
+  namespace: longhorn
+  createNamespace: true
+  wait: true
+  chart: chartcenter/longhorn/longhorn
+  version: '{{ .Values | get "longhorn_version" "1.0.2" }}'
+  values:
+    - environments/{{ .Environment.Name }}/longhorn/values.yaml
+  labels:
+    tier: storage
+    scope: longhorn
+
+- name: longhorn-sc
+  chart: chartcenter/incubator/raw
+  namespace: longhorn
+  version: "0.2.5"
+  disableValidation: true
+  values:
+    - environments/{{ .Environment.Name }}/longhorn/sc-longhorn.yaml
+  labels:
+    tier: storage
+    scope: longhorn-sc
+
+- name: longhorn-sm
+  chart: chartcenter/incubator/raw
+  namespace: monitoring
+  version: "0.2.5"
+  disableValidation: true
+  values:
+    - environments/{{ .Environment.Name }}/longhorn/servicemonitor-longhorn.yaml.gotmpl
+  labels:
+    tier: storage
+    scope: longhorn-sm
+
+- name: velero-config
+  chart: chartcenter/incubator/raw
+  createNamespace: true
+  namespace: velero
+  wait: true
+  version: "0.2.5"
+  values:
+    - environments/all/velero/templates.yaml.gotmpl
+  labels:
+    tier: backup
+    scope: s3config
+
+- name: velero-system
+  namespace: velero
+  createNamespace: true
+  disableValidation: true
+  chart: chartcenter/vmware-tanzu/velero
+  version: '{{ .Values | get "velero_version" "2.12.17" }}'
+  values:
+    - environments/{{ .Environment.Name }}/velero/values.yaml.gotmpl
+  labels:
+    tier: backup
+    scope: velero
+
+# MONITORING
+# * prometheus
+# * grafana
+# * alertmanager
+# * blackbox-exporter
+
+- name: monitoring
+  namespace: monitoring
+  createNamespace: true
+  disableValidation: true
+  # Set disableOpenAPIValidation to true if your chart contains CRDs or install-crd hooks.
+  # * https://github.com/roboll/helmfile/issues/1124
+  disableOpenAPIValidation: true
+  chart: chartcenter/prometheus-community/kube-prometheus-stack
+  version: '{{ .Values | get "prometheus_stack_version" "12.8.0" }}'
+  values:
+    - environments/{{ .Environment.Name }}/prometheus-stack/values.yaml.gotmpl
+  labels:
+    tier: monitoring
+    scope: prometheus-stack
+
+- name: blackbox
+  namespace: monitoring
+  createNamespace: true
+  chart: chartcenter/prometheus-community/prometheus-blackbox-exporter
+  version: '{{ .Values | get "blackbox_exporter_version" "4.10.1" }}'
+  values:
+    - environments/{{ .Environment.Name }}/blackbox-exporter/values.yaml
+  labels:
+    tier: monitoring
+    scope: blackbox-exporter
+
+environments:
+  dev:
+    secrets:
+      - environments/dev/secrets.yaml
+    values:
+      - vault_version: '0.8.0'
+      - nginx_int_version: '3.13.0'
+      - nginx_ext_version: '3.13.0'
+      - certmanager_version: 'v1.1.0'
+      - openebs_version: '2.5.0'
+      - longhorn_version: '1.1.0'
+      - velero_version: '2.12.17'
+      - prometheus_stack_version: '12.10.6'
+  nuc:
+    secrets:
+      - environments/nuc/secrets.yaml
+    values:
+      - vault_version: '0.8.0'
+      - nginx_int_version: '3.12.0'
+      - nginx_ext_version: '3.12.0'
+      - certmanager_version: 'v1.1.0'
+      - openebs_version: '2.5.0'
+      - longhorn_version: '1.1.0'
+      - velero_version: '2.12.17'
+      - prometheus_stack_version: '12.10.6'

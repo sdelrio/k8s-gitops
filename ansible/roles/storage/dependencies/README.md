@@ -1,0 +1,3 @@
+# Prepare ceph
+
+Role intended to setup ceph needs as server side: user, kernel tunning...

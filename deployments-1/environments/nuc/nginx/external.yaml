@@ -1,0 +1,26 @@
+controller:
+  ingressClass: nginx-external
+  stats:
+    enabled: true
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: monitoring
+  serviceMonitor:
+      enabled: true
+  service:
+    externalTrafficPolicy: Local
+    loadBalancerIP: 192.168.1.243
+  deploymentAnnotations: {}
+  extraArgs:
+    default-ssl-certificate: "cert-manager/acme-crt-secret"
+  config:
+    proxy-connect-timeout: "10"
+    proxy-read-timeout: "120"
+    proxy-send-timeout: "120"
+    use-forwarded-headers: "true"
+
+#  https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
+#  https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#forwarded-for-header

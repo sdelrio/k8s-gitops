@@ -1,0 +1,43 @@
+---
+
+- name: Create NS
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: monitoring
+
+- name: Get file content ca crt
+  slurp:
+    src: /etc/kubernetes/ssl/etcd/ca.crt
+  register: etcd_ca_crt
+
+- name: Get file content client crt
+  slurp:
+    src: /etc/kubernetes/ssl/apiserver-etcd-client.crt
+  register: etcd_client_crt
+
+- name: Get file content client key
+  slurp:
+    src: /etc/kubernetes/ssl/apiserver-etcd-client.key
+  register: etcd_client_key
+
+- name: Create secret for prometheus etcd monitoring
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: etcd-certs
+        namespace: monitoring
+      data:
+        ca.crt: |
+          {{ etcd_ca_crt['content'] }}
+        client.crt: |
+          {{ etcd_client_crt['content'] }}
+        client.key: |
+          {{ etcd_client_key['content'] }}
+

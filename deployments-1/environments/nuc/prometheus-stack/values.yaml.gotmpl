@@ -1,0 +1,199 @@
+grafana:
+  enabled: true
+  ingress:
+    enabled: true
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - grafana.internal.{{ .Values.dns_domain_1 }}
+    tls:
+      - hosts:
+          - grafana.internal.{{ .Values.dns_domain_1 }}
+  adminPassword: {{ .Values.grafana_admin_password }}
+  persistence:
+    enabled: true
+    size: 10Gi
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      url: http://loki-stack:3100
+      access: proxy
+      isDefault: false
+      version: 1
+  plugins:
+    - grafana-piechart-panel
+
+prometheus:
+  enabled: true
+  prometheusSpec:
+    replicas: 1
+    secrets:
+      - etcd-certs
+    # Makes ure etcd-cert secret contains data like:
+    # kubectl -n monitoring create secret generic etcd-certs \
+    # --from-file=ca.crt=/etc/kubernetes/ssl/kube-ca.pem \
+    # --from-file=etcd.pem=/etc/kubernetes/ssl/kube-etcd-10-6-3-201.pem \
+    # --from-file=etcd-key.pem=/etc/kubernetes/ssl/kube-etcd-10-6-3-201-key.pem
+    retentionSize: 20GB
+    retention: 30d
+    resources:
+      requests:
+        cpu: 500m
+        memory: 500Mi
+      limits:
+        cpu: 1500m
+        memory: 2000Mi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: openebs-hostpath
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi
+    additionalScrapeConfigs:
+      - job_name: 'blackboxssh'
+        metrics_path: /probe
+        params:
+          module: [ssh_banner]
+        static_configs:
+          - targets:
+            - 192.168.1.200
+            - 192.168.1.201
+            - 192.168.1.202
+        relabel_configs:
+          # Ensure port is 5222, pass as URL parameter
+          - source_labels: [__address__]
+            regex: (.*)(:.*)?
+            replacement: ${1}:22
+            target_label: __param_target
+          # Make instance label the target
+          - source_labels: [__param_target]
+            target_label: instance
+          # Actually talk to the blackbox exporter though
+          - target_label: __address__
+            replacement: blackbox-prometheus-blackbox-exporter:9115 # Blackbox exporter."
+      - job_name: blackbox
+        metrics_path: /probe
+        params:
+          module: [http_2xx]
+        static_configs:
+          - targets:
+            - https://www.{{ .Values.dns_domain_1 }}/
+            - https://www.{{ .Values.dns_domain_1 }}/grimoire/
+            - https://www.{{ .Values.dns_domain_1 }}/rules/
+            - https://www.{{ .Values.dns_domain_1 }}/brigada/
+            - https://torrasque.internal.{{ .Values.dns_domain_1 }}/
+            - https://torrasque.internal.{{ .Values.dns_domain_1 }}/grimoire/
+            - https://torrasque.internal.{{ .Values.dns_domain_1 }}/rules/
+            - https://torrasque.internal.{{ .Values.dns_domain_1 }}/brigada/
+            - https://grafana.internal.{{ .Values.dns_domain_1 }}/
+            - https://vault.internal.{{ .Values.dns_domain_1 }}/
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__  # Comment 1
+            replacement: blackbox-prometheus-blackbox-exporter:9115 # Blackbox exporter."
+      - job_name: blackboxtcp
+        metrics_path: /probe
+        params:
+          module: [ts_banner]
+        static_configs:
+          - targets:
+            - ts.internal.{{ .Values.dns_domain_1 }}:10011
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: blackbox-prometheus-blackbox-exporter:9115 # Blackbox exporter."
+
+prometheusOperator:
+# https://github.com/helm/charts/issues/19147
+  admissionWebhooks:
+    enabled: false
+    patch:
+      enabled: false
+  tls:
+    enabled: false
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 200Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: openebs-hostpath
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi
+
+coreDns:
+  enabled: true
+  service:
+    selector:
+      k8s-app: kube-dns
+
+kubeEtcd:
+  enabled: true
+  endpoints:
+    - 10.6.3.200
+    - 10.6.3.201
+    - 10.6.3.202
+#  service:
+#    selector:
+#      tier: control-plane
+#      component: etcd
+  serviceMonitor:
+    scheme: https
+    insecureSkipVerify: true
+    caFile: "/etc/prometheus/secrets/etcd-certs/ca.crt"
+    certFile: "/etc/prometheus/secrets/etcd-certs/etcd.pem"
+    keyFile: "/etc/prometheus/secrets/etcd-certs/etcd-key.pem"
+
+kubeScheduler:
+  enabled: true
+  service:
+    targetPort: 10251
+  endpoints:
+    - 10.6.3.201
+#    selector:
+#      tier: control-plane
+#      component: kube-scheduler
+#    serviceMonitor:
+#      https: true
+#      insecureSkipVerify: true
+
+kubelet:
+  enabled: true
+  namepsace: kube-system
+
+kubeControllerManager:
+  targetPort: 10257
+  enabled: true
+  endpoints:
+    - 10.6.3.201
+#  service:
+#    selector:
+#      component: kube-controller-manager
+#    serviceMonitor:
+#      https: true
+#      insecureSkipVerify: true
+
+kubeProxy:
+  enabled: true
+  targetPort: 10249
+  endpoints:
+    - 192.168.1.201
