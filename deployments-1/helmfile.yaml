@@ -62,6 +62,18 @@ releases:
     tier: ingress
     scope: external
 
+- name: nginx-dashboards
+  chart: center/incubator/raw
+  namespace: monitoring
+  createNamespace: true
+  wait: false
+  version: '{{ .Values | get "raw_version" "0.2.5" }}'
+  values:
+    - environments/{{ .Environment.Name }}/nginx/nginx-dashboards.yaml.gotmpl
+  labels:
+    tier: ingress
+    scope: dashboards
+
 # If we put this just below the cert mangager the crd ar not ready
 # and will generate an error
 
@@ -126,6 +138,17 @@ releases:
   labels:
     tier: storage
     scope: longhorn-sc
+
+- name: longhorn-sm
+  chart: chartcenter/incubator/raw
+  namespace: monitoring
+  version: "0.2.5"
+  disableValidation: true
+  values:
+    - environments/{{ .Environment.Name }}/longhorn/servicemonitor-longhorn.yaml.gotmpl
+  labels:
+    tier: storage
+    scope: longhorn-sm
 
 - name: velero-config
   chart: chartcenter/incubator/raw
