@@ -3,6 +3,10 @@ controller:
     enabled: true
   metrics:
     enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: monitoring
   serviceMonitor:
     enabled: true
   service:

@@ -1,0 +1,28 @@
+resources:
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    name: longhorn-prometheus-servicemonitor
+    labels:
+      name: longhorn-prometheus-servicemonitor
+      release: monitoring
+  spec:
+    selector:
+      matchLabels:
+        app: longhorn-manager
+    namespaceSelector:
+      matchNames:
+      - longhorn
+    endpoints:
+    - port: manager
+    jobLabel: longhorn
+
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: dashboards-longhorn
+    labels:
+      grafana_dashboard: "1"
+  data:
+    longhorn.json: |-
+{{ readFile "../../../dashboards/longhorn-dashboards.json" | indent 6 }}
