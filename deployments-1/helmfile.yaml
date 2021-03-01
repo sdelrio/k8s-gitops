@@ -1,8 +1,26 @@
 repositories:
   - name: chartcenter
     url: https://repo.chartcenter.io
+  - name: jetstack
+    url: https://charts.jetstack.io
+  - name: ingress-nginx
+    url: https://kubernetes.github.io/ingress-nginx
+  - name: incubator
+    url: https://charts.helm.sh/incubator
+  - name: openebs
+    url: https://openebs.github.io/charts
+  - name: longhorn
+    url: https://charts.longhorn.io
+  - name: vmware-tanzu
+    url: https://vmware-tanzu.github.io/helm-charts/
+  - name: prometheus-community
+    url: https://prometheus-community.github.io/helm-charts
+  - name: k8s-at-home
+    url: https://k8s-at-home.com/charts/
   - name: vernemq
     url: https://vernemq.github.io/docker-vernemq
+  - name: nextcloud
+    url: https://nextcloud.github.io/helm/
 
 releases:
 
@@ -32,7 +50,7 @@ releases:
   namespace: cert-manager
   createNamespace: true
   wait: true
-  chart: chartcenter/jetstack/cert-manager
+  chart: jetstack/cert-manager
   version: '{{ .Values | get "certmanager_version" "v1.0.4" }}'
   values:
     - installCRDs: true
@@ -41,7 +59,7 @@ releases:
     scope: manager
 
 - name: nginx-internal
-  chart: chartcenter/kubernetes-ingress-nginx/ingress-nginx
+  chart: ingress-nginx/ingress-nginx
   namespace: kube-system
   createNamespace: true
   wait: false
@@ -53,7 +71,7 @@ releases:
     scope: internal
 
 - name: nginx-external
-  chart: chartcenter/kubernetes-ingress-nginx/ingress-nginx
+  chart: ingress-nginx/ingress-nginx
   namespace: kube-system
   createNamespace: true
   wait: false
@@ -65,7 +83,7 @@ releases:
     scope: external
 
 - name: nginx-dashboards
-  chart: center/incubator/raw
+  chart: incubator/raw
   namespace: monitoring
   createNamespace: true
   wait: false
@@ -80,9 +98,9 @@ releases:
 # and will generate an error
 
 - name: cert-issuers
-  chart: chartcenter/incubator/raw
+  chart: incubator/raw
   namespace: cert-manager
-  version: "0.2.5"
+  version: '{{ .Values | get "raw_version" "0.2.5" }}'
   disableValidation: true
   values:
     - environments/{{ .Environment.Name }}/cert-manager/templates.yaml.gotmpl
@@ -99,7 +117,7 @@ releases:
   namespace: openebs
   createNamespace: true
   wait: true
-  chart: chartcenter/openebs/openebs
+  chart: openebs/openebs
   version: '{{ .Values | get "openebs_version" "2.2.1" }}'
   values:
     - environments/{{ .Environment.Name }}/openebs/values.yaml
@@ -108,9 +126,9 @@ releases:
     scope: openebs
 
 - name: hostpath-sc
-  chart: chartcenter/incubator/raw
+  chart: incubator/raw
   namespace: cert-manager
-  version: "0.2.5"
+  version: '{{ .Values | get "raw_version" "0.2.5" }}'
 #  disableValidation: true
   values:
     - environments/{{ .Environment.Name }}/openebs/sc-openebs-hostpath.yaml
@@ -122,7 +140,7 @@ releases:
   namespace: longhorn
   createNamespace: true
   wait: true
-  chart: chartcenter/longhorn/longhorn
+  chart: longhorn/longhorn
   version: '{{ .Values | get "longhorn_version" "1.0.2" }}'
   values:
     - environments/{{ .Environment.Name }}/longhorn/values.yaml
@@ -131,9 +149,9 @@ releases:
     scope: longhorn
 
 - name: longhorn-sc
-  chart: chartcenter/incubator/raw
+  chart: incubator/raw
   namespace: longhorn
-  version: "0.2.5"
+  version: '{{ .Values | get "raw_version" "0.2.5" }}'
   disableValidation: true
   values:
     - environments/{{ .Environment.Name }}/longhorn/sc-longhorn.yaml
@@ -142,9 +160,9 @@ releases:
     scope: longhorn-sc
 
 - name: longhorn-sm
-  chart: chartcenter/incubator/raw
+  chart: incubator/raw
   namespace: monitoring
-  version: "0.2.5"
+  version: '{{ .Values | get "raw_version" "0.2.5" }}'
   disableValidation: true
   values:
     - environments/{{ .Environment.Name }}/longhorn/servicemonitor-longhorn.yaml.gotmpl
@@ -153,11 +171,11 @@ releases:
     scope: longhorn-sm
 
 - name: velero-config
-  chart: chartcenter/incubator/raw
+  chart: incubator/raw
   createNamespace: true
   namespace: velero
+  version: '{{ .Values | get "raw_version" "0.2.5" }}'
   wait: true
-  version: "0.2.5"
   values:
     - environments/all/velero/templates.yaml.gotmpl
   labels:
@@ -168,7 +186,7 @@ releases:
   namespace: velero
   createNamespace: true
   disableValidation: true
-  chart: chartcenter/vmware-tanzu/velero
+  chart: vmware-tanzu/velero
   version: '{{ .Values | get "velero_version" "2.12.17" }}'
   values:
     - environments/{{ .Environment.Name }}/velero/values.yaml.gotmpl
@@ -189,7 +207,7 @@ releases:
   # Set disableOpenAPIValidation to true if your chart contains CRDs or install-crd hooks.
   # * https://github.com/roboll/helmfile/issues/1124
   disableOpenAPIValidation: true
-  chart: chartcenter/prometheus-community/kube-prometheus-stack
+  chart: prometheus-community/kube-prometheus-stack
   version: '{{ .Values | get "prometheus_stack_version" "12.8.0" }}'
   values:
     - environments/{{ .Environment.Name }}/prometheus-stack/values.yaml.gotmpl
@@ -200,7 +218,7 @@ releases:
 - name: blackbox
   namespace: monitoring
   createNamespace: true
-  chart: chartcenter/prometheus-community/prometheus-blackbox-exporter
+  chart: prometheus-community/prometheus-blackbox-exporter
   version: '{{ .Values | get "blackbox_exporter_version" "4.10.1" }}'
   values:
     - environments/{{ .Environment.Name }}/blackbox-exporter/values.yaml
@@ -215,7 +233,7 @@ releases:
   namespace: nf-discovery
   createNamespace: true
   wait: false
-  chart: chartcenter/k8s-at-home/node-feature-discovery
+  chart: k8s-at-home/node-feature-discovery
   version: '{{ .Values | get "node_feature_discovery" "2.0.0" }}'
   values:
     - environments/{{ .Environment.Name }}/nf-discovery/values.yaml
@@ -226,7 +244,7 @@ releases:
 #  Home Assitant
 
 - name: home-assistant
-  chart: chartcenter/k8s-at-home/home-assistant
+  chart: k8s-at-home/home-assistant
   version: '{{ .Values | get "home_assistant_version" "6.0.0" }}'
   namespace: home-assistant
   createNamespace: true
@@ -248,7 +266,7 @@ releases:
     scope: vernemq
 
 - name: zigbee2mqtt
-  chart: chartcenter/k8s-at-home/zigbee2mqtt
+  chart: k8s-at-home/zigbee2mqtt
   version: '{{ .Values | get "zigbee2mqtt_version" "6.0.0" }}'
   namespace: home-assistant
   createNamespace: true
@@ -266,7 +284,7 @@ environments:
       - vault_version: '0.8.0'
       - nginx_int_version: '3.13.0'
       - nginx_ext_version: '3.13.0'
-      - certmanager_version: 'v1.1.0'
+      - certmanager_version: '1.1.0'
       - openebs_version: '2.6.0'
       - longhorn_version: '1.1.0'
       - velero_version: '2.12.17'
@@ -278,7 +296,7 @@ environments:
       - vault_version: '0.8.0'
       - nginx_int_version: '3.12.0'
       - nginx_ext_version: '3.12.0'
-      - certmanager_version: 'v1.1.0'
+      - certmanager_version: '1.1.0'
       - openebs_version: '2.6.0'
       - longhorn_version: '1.1.0'
       - velero_version: '2.12.17'
