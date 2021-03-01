@@ -1,6 +1,4 @@
 repositories:
-  - name: chartcenter
-    url: https://repo.chartcenter.io
   - name: jetstack
     url: https://charts.jetstack.io
   - name: ingress-nginx
