@@ -1,0 +1,10 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: infra
+  namespace: argocd
+spec:
+  description: Infrastructure App Deployments
+  destinations:
+  - namespace: '*'
+    server: https://kubernetes.default.svc
