@@ -1,4 +1,6 @@
 repositories:
+  - name: argo
+    url: https://argoproj.github.io/argo-helm
   - name: jetstack
     url: https://charts.jetstack.io
   - name: ingress-nginx
@@ -21,6 +23,17 @@ repositories:
     url: https://nextcloud.github.io/helm/
 
 releases:
+
+- name: argocd
+  chart: argo/argo-cd
+  version: '{{ .Values | get "argocd_ersion" "2.17.0" }}'
+  namespace: argocd
+  createNamespace: true
+  values:
+    - environments/{{ .Environment.Name }}/argocd/values.yaml.gotmpl
+  labels:
+    tier: cd
+    scope: argocd
 
 #  VAULT + SECRETS OPERATOR
 #  * VAULT
