@@ -1,11 +1,14 @@
 ---
-resources:
-- apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    name: dashboards-nginx
-    labels:
-      grafana_dashboard: "1"
-  data:
-    nginx.json: |-
-{{ readFile "../dashboards/nginx-dashboards.json" | indent 6 }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    grafana_dashboard: "1"
+data:
+  {{- $files := .Files }}
+  {{- range .Values.dashboards }}
+  {{ . }}: |-
+{{ $files.Get (print "dashboards/" .) | indent 4 }}
+  {{- end }}
+
