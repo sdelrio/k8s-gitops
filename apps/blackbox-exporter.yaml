@@ -7,6 +7,9 @@ spec:
   project: infra
   source:
     repoURL: https://github.com/sdelrio/k8s-gitops.git
+    helm:
+      valueFiles:
+        -values.yaml
     targetRevision: feature/gitopstest
     path: deployments/blackbox-exporter
   destination:

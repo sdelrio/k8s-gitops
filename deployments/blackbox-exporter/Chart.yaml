@@ -1,5 +1,5 @@
 apiVersion: v2
-name: blackbox-exporter
+name: prometheus-blackbox-exporter
 description: Prometheus Blackbox Exporter
 type: application
 version: 0.1.0
