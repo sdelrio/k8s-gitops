@@ -1,0 +1,11 @@
+---
+resources:
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: dashboards-nginx
+    labels:
+      grafana_dashboard: "1"
+  data:
+    nginx.json: |-
+{{ readFile "../dashboards/nginx-dashboards.json" | indent 6 }}
