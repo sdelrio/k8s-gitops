@@ -9,8 +9,8 @@ spec:
   - namespace: '*'
     server: https://kubernetes.default.svc
   namespaceResourceWhitelist:
-  - group: policy
-    kind: Pod
+  - group: '*'
+    kind: '*'
   sourceRepos:
   - https://github.com/sdelrio/k8s-gitops.git
   - https://prometheus-community.github.io/helm-charts
