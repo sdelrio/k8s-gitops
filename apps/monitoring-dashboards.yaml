@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nginx-dashboards
+  name: monitoring-dashboards
   namespace: argocd
 spec:
   project: infra
