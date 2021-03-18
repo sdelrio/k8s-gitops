@@ -8,3 +8,6 @@ spec:
   destinations:
   - namespace: '*'
     server: https://kubernetes.default.svc
+  sourceRepos:
+  - https://github.com/sdelrio/k8s-gitops.git
+
