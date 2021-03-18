@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/sdelrio/k8s-gitops.git
     targetRevision: feature/gitopstest
-    path: deployments/nginx-dashboards
+    path: deployments/monitoring-dashboards
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
