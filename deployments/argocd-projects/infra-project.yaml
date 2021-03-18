@@ -11,9 +11,6 @@ spec:
   clusterResourceWhitelist:
    - group: '*'
      kind: PodSecurityPolicy
-  namespaceResourceWhitelist:
-  - group: '*'
-    kind: '*'
   sourceRepos:
   - https://github.com/sdelrio/k8s-gitops.git
   - https://prometheus-community.github.io/helm-charts
