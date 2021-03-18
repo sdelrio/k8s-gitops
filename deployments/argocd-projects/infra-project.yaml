@@ -8,6 +8,9 @@ spec:
   destinations:
   - namespace: '*'
     server: https://kubernetes.default.svc
+  namespaceResourceWhitelist:
+  - group: policy
+    kind: Pod
   sourceRepos:
   - https://github.com/sdelrio/k8s-gitops.git
   - https://prometheus-community.github.io/helm-charts
