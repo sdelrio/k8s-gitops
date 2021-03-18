@@ -13,8 +13,9 @@ spec:
     targetRevision: 4.10.2
     chart: prometheus-blackbox-exporter
     helm:
+      version: v3
       valueFiles:
-        - values.yaml
+        - ./blackbox-exporter/values.yaml
   project: infra
   syncPolicy:
     automated:
