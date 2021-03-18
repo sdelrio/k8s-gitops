@@ -1,0 +1,144 @@
+
+# This is required when using Helm v3 to avoiod warnings about nonexistant webhooks
+installCRDs: false
+
+global:
+    ## get latest version, with helmfile + sops + helm plugins
+  image:
+    repository: sdelrio/argocd-helmfile
+    tag: v1.8.7
+
+server:
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 2
+    targetCPUUtilizationiPercentage: 60
+    targetMemoryUtilizationPercentage: 60
+  # log format: text|json
+  logFormat: text
+  # log level
+  logLeve: info
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
+  metric:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: monitoring
+
+  # Certificate config
+  certificate:
+    enabled: false
+
+  # Ingreses will take care of ssl
+  # insecure falt to serve UI over http
+  extraArgs:
+    - --insecure
+
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingres.class: "nginx"
+    hosts:
+      - argocd.internal.{{ .Values.dns_domain_1 }}
+    tls:
+      - hosts:
+        - argocd.internal.{{ .Values.dns_domain_1 }}
+  config:
+    url: https://argocd.internal.{{ .Values.dns_domain_1 }}
+    configManagementPlugins: |
+      - name: helmfilesops
+        init:
+          command: ["/usr/bin/gpg"]
+          args: ["--import", "/home/argocd/gpg/gpg.asc"]
+        generate:
+          command: ["/bin/sh", "-c"]
+          args: ["helmfile --no-color --alow-no-matching-release $HELMFILE_OPTS template $HELMFILE_TEMPLATE_OPTS"]
+
+redis:
+  resources:
+    limits:
+      cpu: 200m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
+dex:
+  enabled: false
+
+controller:
+
+  logFormat: text
+  logLevel: info
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: monitoring
+    rules:
+      enabled: false
+      spec: []
+
+repoServer:
+  logFormat: text
+  logLevel: info
+
+  resources:
+    limits:
+      cpu: 50m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      selector:
+        release: monitoring
+  env:
+    - name: "SOPS_PGP_FP"
+      value: "{{ .Values.argocd_gpg_id }}"
+
+  volumeMounts:
+    - name: "gpg-asc"
+      mountPath: "/home/argocd/gpg"
+      readOnly: true
+  volumes:
+    - name: "gpg-asc"
+      secret:
+        secretName: gpg-asc
+
+# ArgoCD configs
+configs:
+#  knownHosts:
+#    data:
+#      ssh_known_hosts: |
+#         default values already include github.com gitlab.com bitbucket.org
+  secret:
+    # can use htpasswd or https://www.browserling.com/tools/bcrypt
+    # `htpasswd -nbBC 10 "" $ARGO_PWD | tr -d ':\n' | sed 's/$2y/$2a/'`
+    argocdServerAdminPassword: "{{ .Values.argocd_adminpass_bcrypt }}"
+    # Password modification time defaults to current time if not set
+    argocdServerAdminPasswordMtime: "2020-01-02T15:04:05Z"
