@@ -20,6 +20,7 @@ apps:
   - name: blackbox-exporter
     namespace: monitoring
     project: infra
-    helm: true
+    helm:
+      enabled: true
     sync: true
 

@@ -13,10 +13,13 @@ spec:
     {{- if .helm }}
     helm:
       valueFiles:
-        - values.yaml
-    {{- end}}
-    targetRevision: {{ .targetRevision | default $top.Values.spec.source.targetRevision }}
-    path: {{ .path | default (print "deployments/" .name) }}
+      {{- $global := $top.Values.spec.helm | default .helm }}
+      {{- range ( $global.valueFiles | default (tuple "values.yaml")) }}
+        - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+    targetRevision: {{ .targetRevision | default $top.Values.spec.source.targetRevision | quote }}
+    path: {{ .path | default (print "deployments/" .name) | quote }}
   destination:
     server: {{ .server | default $top.Values.spec.destination.server }}
     namespace: {{ .namespace }}
