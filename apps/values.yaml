@@ -6,6 +6,10 @@ spec:
     server: https://kubernetes.default.svc
 
 apps:
+  - name: apps
+    namespace: argocd
+    path: apps
+    sync: true
   - name: argocd-projects
     namespace: argocd
     sync: true

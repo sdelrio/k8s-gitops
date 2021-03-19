@@ -16,7 +16,7 @@ spec:
         - values.yaml
     {{- end}}
     targetRevision: {{ .targetRevision | default $top.Values.spec.source.targetRevision }}
-    path: deployments/{{ .path | default .name }}
+    path: {{ .path | default (print "deployments/" .name) }}
   destination:
     server: {{ .server | default $top.Values.spec.destination.server }}
     namespace: {{ .namespace }}
