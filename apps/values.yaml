@@ -1,0 +1,21 @@
+spec:
+  source:
+    repoURL: https://github.com/sdelrio/k8s-gitops.git
+    targetRevision: feature/gitopstest
+  destination:
+    server: https://kubernetes.default.svc
+
+apps:
+  - name: argocd-projects
+    namespace: argocd
+    sync: true
+  - name: monitoring-dashboards
+    namespace: monitoring
+    project: infra
+    sync: true
+  - name: blackbox-exporter
+    namespace: monitoring
+    project: infra
+    helm: true
+    sync: true
+
