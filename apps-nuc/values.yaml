@@ -16,11 +16,6 @@ apps:
   - name: nf-discovery
     namespace: nf-discovery
     project: iot
-    helm:
-      enabled: true
-    sync:
-      enabled: true
-      createNamespace: true
-
-
-
+    helm: true
+    sync: true
+    createNamespace: true

@@ -23,14 +23,14 @@ spec:
   destination:
     server: {{ .server | default $top.Values.spec.destination.server }}
     namespace: {{ .namespace }}
-  {{- if .sync }}
   syncPolicy:
+    {{- if .sync }}
     automated:
       prune: true
       selfHeal: true
-    {{- if .sync.CreateNamespace }}
+    {{- end }}
+    {{- if .createNamespace }}
     syncOptions:
       - CreateNamespace=true
     {{- end }}
-  {{- end }}
 {{- end }}
