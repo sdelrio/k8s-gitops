@@ -19,3 +19,9 @@ apps:
     project: iot
     helm: true
     sync: true
+  - name: home-assistant
+    namespace: iot
+    project: iot
+    helmfile: true
+    helmfileEnvironment: nuc
+    sync: true

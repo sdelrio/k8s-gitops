@@ -18,6 +18,15 @@ spec:
         - {{ . | quote }}
       {{- end }}
     {{- end }}
+    {{- if .helmfile }}
+    plugin:
+      name: helmfilesops
+      {{- if .helmfileEnvironment }}
+      env:
+        - name: HELMFILE_OPTS
+          value: "--environment {{ .helmfileEnvironment }}"
+      {{- end }}
+    {{- end }}
     targetRevision: {{ .targetRevision | default $top.Values.spec.source.targetRevision | quote }}
     path: {{ .path | default (print "deployments/" .name) | quote }}
   destination:
