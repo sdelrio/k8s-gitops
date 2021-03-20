@@ -9,13 +9,13 @@ spec:
       - values-nuc.yaml
 
 apps:
-  - name: apps-nuc
-    namespace: argocd
-    path: apps-nuc
+  - name: apps-nuc-iot
+    namespace: iot
+    path: apps-nuc-iot
     sync: true
+    createNamespace: true
   - name: nf-discovery
     namespace: iot
     project: iot
     helm: true
     sync: true
-    createNamespace: true
