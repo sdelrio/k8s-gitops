@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: iot
+  namespace: argocd
+spec:
+  description: Internet Of Things Deployments
+  destinations:
+  - namespace: '*'
+    server: https://kubernetes.default.svc
+  sourceRepos:
+  - https://github.com/sdelrio/k8s-gitops.git
+  - https://k8s-at-home.com/charts
