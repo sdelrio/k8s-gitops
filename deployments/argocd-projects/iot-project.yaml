@@ -8,6 +8,9 @@ spec:
   destinations:
   - namespace: '*'
     server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRole
   sourceRepos:
   - https://github.com/sdelrio/k8s-gitops.git
   - https://k8s-at-home.com/charts
