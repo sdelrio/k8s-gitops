@@ -14,7 +14,7 @@ apps:
     path: apps-nuc
     sync: true
   - name: nf-discovery
-    namespace: nf-discovery
+    namespace: iot
     project: iot
     helm: true
     sync: true

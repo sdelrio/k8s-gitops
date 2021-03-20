@@ -6,7 +6,9 @@ metadata:
 spec:
   description: Internet Of Things Deployments
   destinations:
-  - namespace: '*'
+  - namespace: 'iot'
+    server: https://kubernetes.default.svc
+  - namespace: 'argocd'
     server: https://kubernetes.default.svc
   clusterResourceWhitelist:
   - group: rbac.authorization.k8s.io
