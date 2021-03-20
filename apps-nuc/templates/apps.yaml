@@ -28,5 +28,9 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    {{- if .sync.CreateNamespace }}
+    syncOptions:
+      - CreateNamespace=true
+    {{- end }}
   {{- end }}
 {{- end }}

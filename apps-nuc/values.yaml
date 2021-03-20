@@ -18,6 +18,9 @@ apps:
     project: iot
     helm:
       enabled: true
-    sync: true
+    sync:
+      enabled: true
+      createNamespace: true
+
 
 
