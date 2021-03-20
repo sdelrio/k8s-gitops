@@ -1,0 +1,66 @@
+---
+sources:
+  # - cpu
+  - custom
+  # - iommu
+  # - kernel
+  # - local
+  # - memory
+  # - network
+  - pci
+  - storage
+  # - system
+  - usb
+
+config: |
+  sources:
+    usb:
+      deviceClassWhitelist:
+        - "02"
+        - "0e"
+        - "ef"
+        - "fe"
+        - "ff"
+      deviceLabelFields:
+        - "class"
+        - "vendor"
+        - "device"
+    custom:
+      - name: "intel-gpu"
+        matchOn:
+          - pciId:
+              vendor: ["8086"]
+              device: ["5a85"]
+      - name: "intel-card-reader"
+        matchOn:
+          - pciId:
+              vendor: ["10ec"]
+              device: ["5229"]
+      - name: "ti-cc2531"
+        matchOn:
+          - usbId:
+              class: ["02"]
+              vendor: ["0451"]
+              device: ["16a8"]
+master:
+  replicaCount: 1
+  tolerations:
+    - key: "node-role.kubernetes.io/master"
+      operator: "Equal"
+      value: ""
+      effect: "NoSchedule"
+  resources:
+    requests:
+      cpu: 25m
+      memory: 22Mi
+    limits:
+      cpu: 25m
+      memory: 22Mi
+worker:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 18Mi
+    limits:
+      cpu: 25m
+      memory: 18Mi

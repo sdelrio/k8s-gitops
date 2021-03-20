@@ -1,0 +1,22 @@
+spec:
+  source:
+    repoURL: https://github.com/sdelrio/k8s-gitops.git
+    targetRevision: feature/gitopstest
+  destination:
+    server: https://kubernetes.default.svc
+  helm:
+    valueFiles:
+      - values-dev.yaml
+
+apps:
+  - name: apps-dev
+    namespace: argocd
+    path: apps-dev
+    sync: true
+  - name: nf-discovery
+    namespace: nf-discovery
+    project: iot
+    helm:
+      enabled: true
+    sync: true
+
