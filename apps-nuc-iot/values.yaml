@@ -25,3 +25,9 @@ apps:
     helmfile: true
     helmfileEnvironment: nuc
     sync: true
+  - name: zigbee2mqtt
+    namespace: iot
+    project: iot
+    helmfile: true
+    helmfileEnvironment: nuc
+    sync: true
