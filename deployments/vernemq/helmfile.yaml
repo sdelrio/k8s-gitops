@@ -10,8 +10,6 @@ releases:
 - name: vernemq
   chart: vernemq/vernemq
   version: '{{ .Values | get "vernemq_version" "1.6.7" }}'
-  namespace: home-assistant
-  createNamespace: true
   values:
     - environments/{{ .Environment.Name }}/values.yaml.gotmpl
   labels:
