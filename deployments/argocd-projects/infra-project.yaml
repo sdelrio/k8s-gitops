@@ -11,6 +11,12 @@ spec:
   clusterResourceWhitelist:
    - group: '*'
      kind: PodSecurityPolicy
+   - group: 'rbac.authorization.k8s.io'
+     kind: ClusterRole
+   - group: 'rbac.authorization.k8s.io'
+     kind: ClusterRoleBinding
+   - group: 'storage.k8s.io'
+     kind: StorageClass
   sourceRepos:
   - https://github.com/sdelrio/k8s-gitops.git
   - https://prometheus-community.github.io/helm-charts
