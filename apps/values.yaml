@@ -12,6 +12,7 @@ apps:
     sync: true
   - name: kube-vip
     namespace: kube-system
+    project: infra
     sync: false
   - name: openebs
     namespace: openebs
