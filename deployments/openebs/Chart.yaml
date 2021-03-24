@@ -1,0 +1,13 @@
+apiVersion: v2
+name: "openebs"
+description: "Chart for openbs local storage"
+# app version
+appVersion: "1.0"
+# chart version
+version: 0.1.0
+
+dependencies:
+- name: openebs
+  repository: https://openebs.github.io/charts
+  version: 2.6.0
+

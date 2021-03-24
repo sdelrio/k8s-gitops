@@ -1,0 +1,75 @@
+---
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  create: true
+  name:
+
+# Disable Provisioner
+provisioner:
+  enabled: false
+  replicas: 0
+
+# We only want OpenEBS for the local storage provisioner
+localprovisioner:
+  replicas: 1
+  basePath: "/openebs/local"
+#  basePath: "/var/openebs/local"
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  healthCheck:
+    initialDelaySeconds: 30
+    periodSeconds: 60
+
+# API Server replicas
+apiserver:
+  enabled: false
+  replicas: 0
+
+defaultStorageConfig:
+  enabled: false
+# We will create the default storage class
+
+snapshotOperator:
+  replicas: 0
+
+# Number of Jiva replicas, we wont use so it doesnt' matter the replicas or the path
+jiva:
+  replicas: 3
+# hostpath used by default Jiva StorageClass
+  defaultStoragePath: "/var/openebs"
+#  defaultStoragePath: "/openebs/jiva"
+
+# Disable snapshot Operator
+snapshotOperator:
+  enabled: false
+
+# Disable Node Disk Manager
+ndm:
+  enabled: false
+  sparse:
+    enabled: false
+    path: "/openebs/sparse"
+    size: "53687091200" # 50M
+
+# Disable ndm Operator
+ndmOperator:
+  enabled: false
+
+# Disable sending stats to Google Analytics
+analytics:
+  enable: false
+
+webhook:
+  enabled: false
+  replicas: 0
+
+policies:
+  monitoring:
+    enabled: true
+
+crd:
+  enableInstall: true

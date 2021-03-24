@@ -10,6 +10,14 @@ apps:
     namespace: argocd
     path: apps
     sync: true
+  - name: kube-vip
+    sync: false
+  - name: openebs
+    namespace: openebs
+    project: infra
+    helm:
+      enabled: true
+    sync: true
   - name: argocd-projects
     namespace: argocd
     sync: true
