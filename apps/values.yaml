@@ -11,6 +11,7 @@ apps:
     path: apps
     sync: true
   - name: kube-vip
+    namespace: kube-system
     sync: false
   - name: openebs
     namespace: openebs
