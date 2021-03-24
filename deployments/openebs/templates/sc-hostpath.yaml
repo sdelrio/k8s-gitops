@@ -1,19 +1,18 @@
-resources:
-- apiVersion: storage.k8s.io/v1
-  kind: StorageClass
-  metadata:
-    annotations:
-      cas.openebs.io/config: "- name: StorageType\n  value: \"hostpath\"\n- name: BasePath\n
-        \ value: /openebs/local \n"
-      cas.openebs.io/config2: |
-        - name: StorageType
-          value: "hostpath"
-        - name: BasePath
-          value: /openebs/local
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    cas.openebs.io/config: "- name: StorageType\n  value: \"hostpath\"\n- name: BasePath\n
+      \ value: /openebs/local \n"
+    cas.openebs.io/config2: |
+      - name: StorageType
+        value: "hostpath"
+      - name: BasePath
+        value: /openebs/local
 
-      openebs.io/cas-type: local
-      storageclass.kubernetes.io/is-default-class: "true"
-    name: openebs-hostpath
-  provisioner: openebs.io/local
-  reclaimPolicy: Delete
-  volumeBindingMode: WaitForFirstConsumer
+    openebs.io/cas-type: local
+    storageclass.kubernetes.io/is-default-class: "true"
+  name: openebs-hostpath
+provisioner: openebs.io/local
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
