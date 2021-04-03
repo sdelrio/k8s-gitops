@@ -26,7 +26,7 @@ releases:
 
 - name: argocd
   chart: argo/argo-cd
-  version: '{{ .Values | get "argocd_ersion" "2.17.0" }}'
+  version: '{{ .Values | get "argocd_version" "2.17.0" }}'
   namespace: argocd
   createNamespace: true
   values:
@@ -124,28 +124,28 @@ releases:
 #  * Longorn clustered storaged
 #  * Velero for backup
 
-- name: hostpath
-  namespace: openebs
-  createNamespace: true
-  wait: true
-  chart: openebs/openebs
-  version: '{{ .Values | get "openebs_version" "2.2.1" }}'
-  values:
-    - environments/{{ .Environment.Name }}/openebs/values.yaml
-  labels:
-    tier: storage
-    scope: openebs
+#- name: hostpath
+#  namespace: openebs
+#  createNamespace: true
+#  wait: true
+#  chart: openebs/openebs
+#  version: '{{ .Values | get "openebs_version" "2.2.1" }}'
+#  values:
+#    - environments/{{ .Environment.Name }}/openebs/values.yaml
+#  labels:
+#    tier: storage
+#    scope: openebs
 
-- name: hostpath-sc
-  chart: incubator/raw
-  namespace: cert-manager
-  version: '{{ .Values | get "raw_version" "0.2.5" }}'
-#  disableValidation: true
-  values:
-    - environments/{{ .Environment.Name }}/openebs/sc-openebs-hostpath.yaml
-  labels:
-    tier: storage
-    scope: openebs-sc
+#- name: hostpath-sc
+#  chart: incubator/raw
+#  namespace: cert-manager
+#  version: '{{ .Values | get "raw_version" "0.2.5" }}'
+##  disableValidation: true
+#  values:
+#    - environments/{{ .Environment.Name }}/openebs/sc-openebs-hostpath.yaml
+#  labels:
+#    tier: storage
+#    scope: openebs-sc
 
 - name: longhorn
   namespace: longhorn
@@ -226,66 +226,66 @@ releases:
     tier: monitoring
     scope: prometheus-stack
 
-- name: blackbox
-  namespace: monitoring
-  createNamespace: true
-  chart: prometheus-community/prometheus-blackbox-exporter
-  version: '{{ .Values | get "blackbox_exporter_version" "4.10.1" }}'
-  values:
-    - environments/{{ .Environment.Name }}/blackbox-exporter/values.yaml
-  labels:
-    tier: monitoring
-    scope: blackbox-exporter
+#- name: blackbox
+#  namespace: monitoring
+#  createNamespace: true
+#  chart: prometheus-community/prometheus-blackbox-exporter
+#  version: '{{ .Values | get "blackbox_exporter_version" "4.10.1" }}'
+#  values:
+#    - environments/{{ .Environment.Name }}/blackbox-exporter/values.yaml
+#  labels:
+#    tier: monitoring
+#    scope: blackbox-exporter
 
 #  AUTO LABEL NODES for usb/pci devices
 #  * node-feature-discovery
 
-- name: nf-discovery
-  namespace: nf-discovery
-  createNamespace: true
-  wait: false
-  chart: k8s-at-home/node-feature-discovery
-  version: '{{ .Values | get "node_feature_discovery" "2.0.0" }}'
-  values:
-    - environments/{{ .Environment.Name }}/nf-discovery/values.yaml
-  labels:
-    tier: discovery
-    scope: nf-discovery
+#- name: nf-discovery
+#  namespace: nf-discovery
+#  createNamespace: true
+#  wait: false
+#  chart: k8s-at-home/node-feature-discovery
+#  version: '{{ .Values | get "node_feature_discovery" "2.0.0" }}'
+#  values:
+#    - environments/{{ .Environment.Name }}/nf-discovery/values.yaml
+#  labels:
+#    tier: discovery
+#    scope: nf-discovery
 
 #  Home Assitant
 
-- name: home-assistant
-  chart: k8s-at-home/home-assistant
-  version: '{{ .Values | get "home_assistant_version" "6.0.0" }}'
-  namespace: home-assistant
-  createNamespace: true
-  values:
-    - environments/{{ .Environment.Name }}/home-assistant/values.yaml.gotmpl
-  labels:
-    tier: home
-    scope: assistant
-
-- name: vernemq
-  chart: vernemq/vernemq
-  version: '{{ .Values | get "vernemq_version" "1.6.7" }}'
-  namespace: home-assistant
-  createNamespace: true
-  values:
-    - environments/{{ .Environment.Name }}/vernemq/values.yaml.gotmpl
-  labels:
-    tier: home
-    scope: vernemq
-
-- name: zigbee2mqtt
-  chart: k8s-at-home/zigbee2mqtt
-  version: '{{ .Values | get "zigbee2mqtt_version" "6.0.0" }}'
-  namespace: home-assistant
-  createNamespace: true
-  values:
-    - environments/{{ .Environment.Name }}/zigbee2mqtt/values.yaml.gotmpl
-  labels:
-    tier: home
-    scope: zigbee2mqtt
+#- name: home-assistant
+#  chart: k8s-at-home/home-assistant
+#  version: '{{ .Values | get "home_assistant_version" "6.0.0" }}'
+#  namespace: home-assistant
+#  createNamespace: true
+#  values:
+#    - environments/{{ .Environment.Name }}/home-assistant/values.yaml.gotmpl
+#  labels:
+#    tier: home
+#    scope: assistant
+#
+#- name: vernemq
+#  chart: vernemq/vernemq
+#  version: '{{ .Values | get "vernemq_version" "1.6.7" }}'
+#  namespace: home-assistant
+#  createNamespace: true
+#  values:
+#    - environments/{{ .Environment.Name }}/vernemq/values.yaml.gotmpl
+#  labels:
+#    tier: home
+#    scope: vernemq
+#
+#- name: zigbee2mqtt
+#  chart: k8s-at-home/zigbee2mqtt
+#  version: '{{ .Values | get "zigbee2mqtt_version" "6.0.0" }}'
+#  namespace: home-assistant
+#  createNamespace: true
+#  values:
+#    - environments/{{ .Environment.Name }}/zigbee2mqtt/values.yaml.gotmpl
+#  labels:
+#    tier: home
+#    scope: zigbee2mqtt
 
 environments:
   dev:
