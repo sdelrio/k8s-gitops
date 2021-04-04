@@ -7,8 +7,6 @@ repositories:
     url: https://kubernetes.github.io/ingress-nginx
   - name: incubator
     url: https://charts.helm.sh/incubator
-  - name: openebs
-    url: https://openebs.github.io/charts
   - name: longhorn
     url: https://charts.longhorn.io
   - name: vmware-tanzu
@@ -17,10 +15,10 @@ repositories:
     url: https://prometheus-community.github.io/helm-charts
   - name: k8s-at-home
     url: https://k8s-at-home.com/charts/
-  - name: vernemq
-    url: https://vernemq.github.io/docker-vernemq
-  - name: nextcloud
-    url: https://nextcloud.github.io/helm/
+#  - name: vernemq
+#    url: https://vernemq.github.io/docker-vernemq
+#  - name: nextcloud
+#    url: https://nextcloud.github.io/helm/
 
 releases:
 
@@ -93,17 +91,17 @@ releases:
     tier: ingress
     scope: external
 
-- name: nginx-dashboards
-  chart: incubator/raw
-  namespace: monitoring
-  createNamespace: true
-  wait: false
-  version: '{{ .Values | get "raw_version" "0.2.5" }}'
-  values:
-    - environments/{{ .Environment.Name }}/nginx/nginx-dashboards.yaml.gotmpl
-  labels:
-    tier: ingress
-    scope: dashboards
+#- name: nginx-dashboards
+#  chart: incubator/raw
+#  namespace: monitoring
+#  createNamespace: true
+#  wait: false
+#  version: '{{ .Values | get "raw_version" "0.2.5" }}'
+#  values:
+#    - environments/{{ .Environment.Name }}/nginx/nginx-dashboards.yaml.gotmpl
+#  labels:
+#    tier: ingress
+#    scope: dashboards
 
 # If we put this just below the cert mangager the crd ar not ready
 # and will generate an error
@@ -120,32 +118,8 @@ releases:
     scope: issuers
 
 #  STORAGE
-#  * OpenEBS localPV for high IOPs or clustered apps
 #  * Longorn clustered storaged
 #  * Velero for backup
-
-#- name: hostpath
-#  namespace: openebs
-#  createNamespace: true
-#  wait: true
-#  chart: openebs/openebs
-#  version: '{{ .Values | get "openebs_version" "2.2.1" }}'
-#  values:
-#    - environments/{{ .Environment.Name }}/openebs/values.yaml
-#  labels:
-#    tier: storage
-#    scope: openebs
-
-#- name: hostpath-sc
-#  chart: incubator/raw
-#  namespace: cert-manager
-#  version: '{{ .Values | get "raw_version" "0.2.5" }}'
-##  disableValidation: true
-#  values:
-#    - environments/{{ .Environment.Name }}/openebs/sc-openebs-hostpath.yaml
-#  labels:
-#    tier: storage
-#    scope: openebs-sc
 
 - name: longhorn
   namespace: longhorn
@@ -293,10 +267,9 @@ environments:
       - environments/dev/secrets.yaml
     values:
       - vault_version: '0.8.0'
-      - nginx_int_version: '3.13.0'
-      - nginx_ext_version: '3.13.0'
+      - nginx_int_version: '3.26.0'
+      - nginx_ext_version: '3.26.0'
       - certmanager_version: '1.1.0'
-      - openebs_version: '2.6.0'
       - longhorn_version: '1.1.0'
       - velero_version: '2.12.17'
       - prometheus_stack_version: '12.10.6'
@@ -305,10 +278,9 @@ environments:
       - environments/nuc/secrets.yaml
     values:
       - vault_version: '0.8.0'
-      - nginx_int_version: '3.12.0'
-      - nginx_ext_version: '3.12.0'
-      - certmanager_version: '1.1.0'
-      - openebs_version: '2.6.0'
+      - nginx_int_version: '3.26.0'
+      - nginx_ext_version: '3.26.0'
+      - certmanager_version: '1.2.0'
       - longhorn_version: '1.1.0'
       - velero_version: '2.12.17'
       - prometheus_stack_version: '12.10.6'
