@@ -6,8 +6,8 @@ global:
     ## get latest version, with helmfile + sops + helm plugins
   image:
     repository: sdelrio/argocd-helmfile
-    tag: v2.0.0-rc3
-#    tag: v1.8.7
+    tag: v2.0.0-rc2
+#    tag: v1.8.7-2
 
 server:
   # log format: text|json
@@ -100,11 +100,11 @@ controller:
 
   resources:
     limits:
-      cpu: 500m
-      memory: 640Mi
+      cpu: 800m
+      memory: 1024Mi
     requests:
-      cpu: 250m
-      memory: 256Mi
+      cpu: 400m
+      memory: 512Mi
 
   metrics:
     enabled: true
@@ -130,13 +130,13 @@ repoServer:
   autoscaling:
     enabled: true
     minReplicas: 1
-    maxReplicas: 2
+    maxReplicas: 4
     targetCPUUtilizationiPercentage: 60
     targetMemoryUtilizationPercentage: 90
 
   resources:
     limits:
-      cpu: 500m
+      cpu: 1000m
       memory: 128Mi
     requests:
       cpu: 100m
