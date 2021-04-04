@@ -1,0 +1,26 @@
+repositories:
+  - name: vernemq
+    url: https://vernemq.github.io/docker-vernemq
+
+releases:
+
+# VerneMQ - A MQTT broker that is scalable
+# https://vernemq.com
+
+- name: vernemq
+  chart: vernemq/vernemq
+  version: '{{ .Values | get "vernemq_version" "1.6.7" }}'
+  namespace: iot
+  values:
+    - environments/{{ .Environment.Name }}/values.yaml.gotmpl
+  labels:
+    tier: home
+    scope: vernemq
+
+environments:
+  dev:
+    secrets:
+      - ../../secrets/dev/secrets.yaml
+  nuc:
+    secrets:
+      - ../../secrets/nuc/secrets.yaml

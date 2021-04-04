@@ -1,0 +1,45 @@
+{{- $top := . }}
+{{- range .Values.apps }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name }}
+  namespace: argocd
+spec:
+  project: {{ .project | default "default" }}
+  source:
+    repoURL: {{ .repoURL | default $top.Values.spec.source.repoURL }}
+    {{- if .helm }}
+    helm:
+      valueFiles:
+      {{- $global := $top.Values.spec.helm | default .helm }}
+      {{- range ( $global.valueFiles | default (tuple "values.yaml")) }}
+        - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+    {{- if .helmfile }}
+    plugin:
+      name: helmfilesops
+      {{- if .helmfileEnvironment }}
+      env:
+        - name: HELMFILE_OPTS
+          value: "--environment {{ .helmfileEnvironment }}"
+      {{- end }}
+    {{- end }}
+    targetRevision: {{ .targetRevision | default $top.Values.spec.source.targetRevision | quote }}
+    path: {{ .path | default (print "deployments/" .name) | quote }}
+  destination:
+    server: {{ .server | default $top.Values.spec.destination.server }}
+    namespace: {{ .namespace }}
+  syncPolicy:
+    {{- if .sync }}
+    automated:
+      prune: true
+      selfHeal: true
+    {{- end }}
+    {{- if .createNamespace }}
+    syncOptions:
+      - CreateNamespace=true
+    {{- end }}
+{{- end }}

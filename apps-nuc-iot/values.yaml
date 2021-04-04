@@ -1,0 +1,39 @@
+spec:
+  source:
+    repoURL: https://github.com/sdelrio/k8s-gitops.git
+    targetRevision: feature/gitopstest
+  destination:
+    server: https://kubernetes.default.svc
+  helm:
+    valueFiles:
+      - values-nuc.yaml
+
+apps:
+  - name: apps-nuc-iot
+    namespace: iot
+    path: apps-nuc-iot
+    sync: true
+    createNamespace: true
+  - name: nf-discovery
+    namespace: iot
+    project: iot
+    helm: true
+    sync: true
+  - name: home-assistant
+    namespace: iot
+    project: iot
+    helmfile: true
+    helmfileEnvironment: nuc
+    sync: true
+  - name: zigbee2mqtt
+    namespace: iot
+    project: iot
+    helmfile: true
+    helmfileEnvironment: nuc
+    sync: true
+  - name: vernemq
+    namespace: iot
+    project: iot
+    helmfile: true
+    helmfileEnvironment: nuc
+    sync: true

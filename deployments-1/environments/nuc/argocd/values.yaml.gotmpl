@@ -6,19 +6,21 @@ global:
     ## get latest version, with helmfile + sops + helm plugins
   image:
     repository: sdelrio/argocd-helmfile
-    tag: v1.8.7
+    tag: v2.0.0-rc3
+#    tag: v1.8.7
 
 server:
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 2
-    targetCPUUtilizationiPercentage: 60
-    targetMemoryUtilizationPercentage: 60
   # log format: text|json
   logFormat: text
   # log level
   logLeve: info
+
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 2
+    targetCPUUtilizationiPercentage: 60
+    targetMemoryUtilizationPercentage: 90
 
   resources:
     limits:
@@ -55,6 +57,14 @@ server:
         - argocd.internal.{{ .Values.dns_domain_1 }}
   config:
     url: https://argocd.internal.{{ .Values.dns_domain_1 }}
+    repositories: |
+      - type: helm
+        url: https://prometheus-community.github.io/helm-charts
+        name: prometheus-community
+      - type: helm
+        url: https://k8s-at-home.com/charts
+        name: k8s-at-home
+
     configManagementPlugins: |
       - name: helmfilesops
         init:
@@ -62,7 +72,7 @@ server:
           args: ["--import", "/home/argocd/gpg/gpg.asc"]
         generate:
           command: ["/bin/sh", "-c"]
-          args: ["helmfile --no-color --alow-no-matching-release $HELMFILE_OPTS template $HELMFILE_TEMPLATE_OPTS"]
+          args: ["helmfile --no-color --allow-no-matching-release --helm-binary=helm-v3.4.2 $HELMFILE_OPTS template $HELMFILE_TEMPLATE_OPTS "]
 
 redis:
   resources:
@@ -81,10 +91,17 @@ controller:
   logFormat: text
   logLevel: info
 
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 2
+    targetCPUUtilizationiPercentage: 60
+    targetMemoryUtilizationPercentage: 60
+
   resources:
     limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 640Mi
     requests:
       cpu: 250m
       memory: 256Mi
@@ -99,16 +116,30 @@ controller:
       enabled: false
       spec: []
 
+  args:
+    operationProcessors: "50"
+    appResyncPeriod: "360"
+  extraArgs:
+    - "--repo-server-timeout-seconds"
+    - "210"
+
 repoServer:
   logFormat: text
   logLevel: info
 
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 2
+    targetCPUUtilizationiPercentage: 60
+    targetMemoryUtilizationPercentage: 90
+
   resources:
     limits:
-      cpu: 50m
+      cpu: 500m
       memory: 128Mi
     requests:
-      cpu: 10m
+      cpu: 100m
       memory: 64Mi
 
   metrics:
@@ -120,6 +151,8 @@ repoServer:
   env:
     - name: "SOPS_PGP_FP"
       value: "{{ .Values.argocd_gpg_id }}"
+    - name: "ARGOCD_EXEC_TIMEOUT"
+      value: "300s"
 
   volumeMounts:
     - name: "gpg-asc"

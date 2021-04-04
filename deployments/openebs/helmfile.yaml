@@ -26,7 +26,7 @@ releases:
 
 - name: argocd
   chart: argo/argo-cd
-  version: '{{ .Values | get "argocd_version" "2.17.0" }}'
+  version: '{{ .Values | get "argocd_ersion" "2.17.0" }}'
   namespace: argocd
   createNamespace: true
   values:
@@ -124,28 +124,28 @@ releases:
 #  * Longorn clustered storaged
 #  * Velero for backup
 
-#- name: hostpath
-#  namespace: openebs
-#  createNamespace: true
-#  wait: true
-#  chart: openebs/openebs
-#  version: '{{ .Values | get "openebs_version" "2.2.1" }}'
-#  values:
-#    - environments/{{ .Environment.Name }}/openebs/values.yaml
-#  labels:
-#    tier: storage
-#    scope: openebs
+- name: hostpath
+  namespace: openebs
+  createNamespace: true
+  wait: true
+  chart: openebs/openebs
+  version: '{{ .Values | get "openebs_version" "2.2.1" }}'
+  values:
+    - environments/{{ .Environment.Name }}/openebs/values.yaml
+  labels:
+    tier: storage
+    scope: openebs
 
-#- name: hostpath-sc
-#  chart: incubator/raw
-#  namespace: cert-manager
-#  version: '{{ .Values | get "raw_version" "0.2.5" }}'
-##  disableValidation: true
-#  values:
-#    - environments/{{ .Environment.Name }}/openebs/sc-openebs-hostpath.yaml
-#  labels:
-#    tier: storage
-#    scope: openebs-sc
+- name: hostpath-sc
+  chart: incubator/raw
+  namespace: cert-manager
+  version: '{{ .Values | get "raw_version" "0.2.5" }}'
+#  disableValidation: true
+  values:
+    - environments/{{ .Environment.Name }}/openebs/sc-openebs-hostpath.yaml
+  labels:
+    tier: storage
+    scope: openebs-sc
 
 - name: longhorn
   namespace: longhorn

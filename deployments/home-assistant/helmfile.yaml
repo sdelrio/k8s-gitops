@@ -1,0 +1,28 @@
+repositories:
+  - name: k8s-at-home
+    url: https://k8s-at-home.com/charts/
+
+releases:
+
+#  Home Assitant
+#  https://www.home-assistant.io/
+
+- name: home-assistant
+  chart: k8s-at-home/home-assistant
+  version: '{{ .Values | get "home_assistant_version" "6.0.0" }}'
+  values:
+    - environments/{{ .Environment.Name }}/values.yaml.gotmpl
+  labels:
+    tier: home
+    scope: assistant
+
+environments:
+  dev:
+    secrets:
+      - environments/dev/secrets.yaml
+    values:
+      - home_assistant_version: '6.0.0'
+  nuc:
+    secrets:
+      - ../../secrets/nuc/secrets.yaml
+

@@ -1,0 +1,37 @@
+spec:
+  source:
+    repoURL: https://github.com/sdelrio/k8s-gitops.git
+    targetRevision: feature/gitopstest
+  destination:
+    server: https://kubernetes.default.svc
+
+apps:
+  - name: apps
+    namespace: argocd
+    path: apps
+    sync: true
+  - name: kube-vip
+    path: deployments/kube-vip/overlays/nuc
+    namespace: kube-system
+    project: infra
+    sync: false
+  - name: openebs
+    namespace: openebs
+    project: infra
+    helm:
+      enabled: true
+    sync: true
+  - name: argocd-projects
+    namespace: argocd
+    sync: true
+  - name: monitoring-dashboards
+    namespace: monitoring
+    project: infra
+    sync: true
+  - name: blackbox-exporter
+    namespace: monitoring
+    project: infra
+    helm:
+      enabled: true
+    sync: true
+

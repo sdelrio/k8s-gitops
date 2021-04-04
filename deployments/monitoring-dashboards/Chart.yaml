@@ -1,0 +1,7 @@
+apiVersion: v2
+name: "nginx-dashboard"
+description: "Helm chart for nginx grafana dashboards"
+# app version
+appVersion: "1.0"
+# chart version
+version: 0.1.0

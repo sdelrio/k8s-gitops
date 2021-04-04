@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  creationTimestamp: null
+  name: kube-vip-ds
+  namespace: kube-system
+spec:
+  template:
+    spec:
+      containers:
+      - name: kube-vip
+        env:
+        - name: vip_interface
+          value: enp3s0
+        - name: address
+          value: 192.168.1.252
