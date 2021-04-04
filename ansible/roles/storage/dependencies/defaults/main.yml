@@ -1,3 +1,0 @@
----
-ceph_dependencies_uid: 167
-ceph_dependencies_gid: "{{ ceph_dependencies_uid }}"

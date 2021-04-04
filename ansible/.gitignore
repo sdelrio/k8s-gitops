@@ -1,9 +1,0 @@
-**/credentials
-inventory/*/artifacts/
-roles/geerlingguy.ntp
-roles/geerlingguy.helm
-vagrant/config.rb
-inventory/**/vagrant_ansible_inventory
-inventory/**/artifacts_vagrant
-inventory/**/credentials_vagrant
-.vagrant

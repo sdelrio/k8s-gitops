@@ -1,2 +1,0 @@
-master_ip: "{{ hostvars[groups['kube-master'][0]]['ip'] | default(groups['kube-master'][0]) }}"
-
