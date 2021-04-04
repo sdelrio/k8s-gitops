@@ -87,18 +87,6 @@ releases:
     tier: ingress
     scope: external
 
-#- name: nginx-dashboards
-#  chart: incubator/raw
-#  namespace: monitoring
-#  createNamespace: true
-#  wait: false
-#  version: '{{ .Values | get "raw_version" "0.2.5" }}'
-#  values:
-#    - environments/{{ .Environment.Name }}/nginx/nginx-dashboards.yaml.gotmpl
-#  labels:
-#    tier: ingress
-#    scope: dashboards
-
 # If we put this just below the cert mangager the crd ar not ready
 # and will generate an error
 
