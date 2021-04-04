@@ -11,6 +11,7 @@ apps:
     path: apps
     sync: true
   - name: kube-vip
+    path: deployments/kube-vip/overlays/nuc
     namespace: kube-system
     project: infra
     sync: false
