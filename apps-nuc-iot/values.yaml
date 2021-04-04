@@ -1,7 +1,7 @@
 spec:
   source:
     repoURL: https://github.com/sdelrio/k8s-gitops.git
-    targetRevision: feature/gitopstest
+    targetRevision: master
   destination:
     server: https://kubernetes.default.svc
   helm:
