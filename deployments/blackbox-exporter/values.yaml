@@ -1,4 +1,9 @@
 prometheus-blackbox-exporter:
+  serviceMonitor:
+    enabled: true
+    defaults:
+      labels:
+        release: monitoring
   config:
     modules:
       http_2xx:
