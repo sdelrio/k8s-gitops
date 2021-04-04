@@ -196,18 +196,6 @@ releases:
     tier: monitoring
     scope: prometheus-stack
 
-#- name: blackbox
-#  namespace: monitoring
-#  createNamespace: true
-#  chart: prometheus-community/prometheus-blackbox-exporter
-#  version: '{{ .Values | get "blackbox_exporter_version" "4.10.1" }}'
-#  values:
-#    - environments/{{ .Environment.Name }}/blackbox-exporter/values.yaml
-#  labels:
-#    tier: monitoring
-#    scope: blackbox-exporter
-
-
 environments:
   dev:
     secrets:
