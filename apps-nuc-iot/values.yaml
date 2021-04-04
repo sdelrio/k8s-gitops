@@ -10,7 +10,7 @@ spec:
 
 apps:
   - name: apps-nuc-iot
-    namespace: iot
+    namespace: argocd
     path: apps-nuc-iot
     sync: true
     createNamespace: true
