@@ -9,5 +9,5 @@ version: 0.1.0
 dependencies:
 - name: openebs
   repository: https://openebs.github.io/charts
-  version: 2.7.0
+  version: 2.8.0
 
