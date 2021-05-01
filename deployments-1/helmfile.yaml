@@ -29,6 +29,17 @@ releases:
     tier: cd
     scope: argocd
 
+- name: argocd-notifications
+  chart: argo/argocd-notifications
+  version: '{{ .Values | get "argocd_notifications_version" "1.2.0" }}'
+  namespace: argocd
+  createNamespace: true
+  values:
+    - environments/{{ .Environment.Name }}/argocd-notifications/values.yaml.gotmpl
+  labels:
+    tier: notifications
+    scope: argocd
+
 #  VAULT + SECRETS OPERATOR
 #  * VAULT
 #  * Secrets operator
@@ -207,3 +218,4 @@ environments:
       - longhorn_version: '1.1.0'
       - velero_version: '2.12.17'
       - prometheus_stack_version: '12.10.6'
+      - argocd_version: '3.2.2'
