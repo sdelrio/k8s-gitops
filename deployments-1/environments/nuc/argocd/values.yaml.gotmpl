@@ -6,7 +6,7 @@ global:
     ## get latest version, with helmfile + sops + helm plugins
   image:
     repository: sdelrio/argocd-helmfile
-    tag: v2.0.0-rc2
+    tag: 2.0.1
 #    tag: v1.8.7-2
 
 server:
@@ -20,7 +20,7 @@ server:
     minReplicas: 1
     maxReplicas: 2
     targetCPUUtilizationiPercentage: 60
-    targetMemoryUtilizationPercentage: 90
+    targetMemoryUtilizationPercentage: 0
 
   resources:
     limits:
@@ -64,6 +64,18 @@ server:
       - type: helm
         url: https://k8s-at-home.com/charts
         name: k8s-at-home
+      - type: helm
+        url: "https://{{ .Values.gitlab_proj1_name }}.gitlab.io/helm-{{ .Values.gitlab_proj1_name }}"
+        name: "{{ .Values.gitlab_proj1_name }}"
+
+    repository.credentials: |
+        - url: "https://gitlab.com/{{ .Values.gitlab_proj1_name }}"
+          usernameSecret:
+            name: argocd-secret
+            key: gitlab-proj1.user
+          passwordSecret:
+            name: argocd-secret
+            key: gitlab-proj1.token
 
     configManagementPlugins: |
       - name: helmfilesops
@@ -91,12 +103,7 @@ controller:
   logFormat: text
   logLevel: info
 
-  autoscaling:
-    enabled: true
-    minReplicas: 1
-    maxReplicas: 2
-    targetCPUUtilizationiPercentage: 60
-    targetMemoryUtilizationPercentage: 60
+  replicas: 1
 
   resources:
     limits:
@@ -132,7 +139,7 @@ repoServer:
     minReplicas: 1
     maxReplicas: 4
     targetCPUUtilizationiPercentage: 60
-    targetMemoryUtilizationPercentage: 90
+    targetMemoryUtilizationPercentage: 0
 
   resources:
     limits:
@@ -175,3 +182,9 @@ configs:
     argocdServerAdminPassword: "{{ .Values.argocd_adminpass_bcrypt }}"
     # Password modification time defaults to current time if not set
     argocdServerAdminPasswordMtime: "2020-01-02T15:04:05Z"
+
+    extra:
+#       dex.ldap.bindDN: "cn:admin,dc=domain,dc=com"
+#       dex.ldap.bindPW: "password"
+      gitlab-proj1.user: "{{ .Values.gitlab_proj1_user }}"
+      gitlab-proj1.token: "{{ .Values.gitlab_proj1_token }}"
