@@ -23,7 +23,16 @@ grafana:
       version: 1
   plugins:
     - grafana-piechart-panel
-
+  sidecar:
+    dashboards:
+#      enabled: true
+#      label: grafana_dashboard
+#      folder: /tmp/dashboards
+      provider:
+        foldersFromFilesStructure: true
+      annotations:
+          k8s-sidecar-target-directory: "/tmp/dashboards/kubernetes"
+      searchNamespace: ALL
 prometheus:
   enabled: true
   prometheusSpec:
