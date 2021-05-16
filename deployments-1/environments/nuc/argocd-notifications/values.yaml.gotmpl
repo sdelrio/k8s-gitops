@@ -24,6 +24,8 @@ resources:
     memory: 64Mi
 
 notifiers:
+  service.slack: |
+    token: disabled
   service.telegram: |
     token: $telegram-token
 
@@ -130,5 +132,5 @@ templates:
     email:
       subject: {{`Application {{.app.metadata.name}} has been successfully synced.`}}
     message: |
-      {{`{{if eq .serviceType "slack"}}:white_check_mark:{{end}} Application {{.app.metadata.name}} has been successfully synced at {{ (call time.Parse .app.status.operationState.finishedAt).Local.Format "2006-01-02T15:04:05Z02:00" }} UTC.
+      {{`{{if eq .serviceType "slack"}}:white_check_mark:{{end}} Application {{.app.metadata.name}} has been successfully synced.
       Sync operation details are available at: {{.context.argocdUrl}}/applications/{{.app.metadata.name}}?operation=true .`}}
