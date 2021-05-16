@@ -1,0 +1,23 @@
+
+## Daemonset update strategy
+updateStrategy: RollingUpdate
+
+## cli-parameters
+configuration:
+  rebootDays:
+    - sat
+    - tue
+    - thu
+# --start-time
+  startTime: "12:00"
+# --end-time
+  endTime: "21:00"
+# --time-zone
+  timeZone: "Europe/Madrid"
+  period: "1h0m0s"
+
+## Create a ServiceMonitor for prometheus-operator
+metrics:
+  create: true
+  labels:
+    release: monitoring
