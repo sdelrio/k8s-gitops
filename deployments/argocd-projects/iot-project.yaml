@@ -15,7 +15,11 @@ spec:
     kind: ClusterRole
   - group: rbac.authorization.k8s.io
     kind: ClusterRoleBinding
+  - group: policy
+    kind: PodSecurityPolicy
   sourceRepos:
   - https://github.com/sdelrio/k8s-gitops.git
   - https://k8s-at-home.com/charts
   - https://kubernetes-sigs.github.io/descheduler
+
+#Resource policy:PodSecurityPolicy is not permitted in project iot.
