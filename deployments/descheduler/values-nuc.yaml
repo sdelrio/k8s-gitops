@@ -3,6 +3,8 @@ descheduler:
     evict-local-storage-pods: '' 
   nameOverride: "descheduler"
   schedule: "*/2 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
   deschedulerPolicy:
     strategies:
       RemoveDuplicates:
