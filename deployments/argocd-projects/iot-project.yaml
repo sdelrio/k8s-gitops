@@ -11,11 +11,11 @@ spec:
   - namespace: 'argocd'
     server: https://kubernetes.default.svc
   clusterResourceWhitelist:
-  - group: rbac.authorization.k8s.io
+  - group: 'rbac.authorization.k8s.io'
     kind: ClusterRole
-  - group: rbac.authorization.k8s.io
+  - group: 'rbac.authorization.k8s.io'
     kind: ClusterRoleBinding
-  - group: policy
+  - group: '*'
     kind: PodSecurityPolicy
   sourceRepos:
   - https://github.com/sdelrio/k8s-gitops.git
