@@ -18,3 +18,4 @@ spec:
   sourceRepos:
   - https://github.com/sdelrio/k8s-gitops.git
   - https://k8s-at-home.com/charts
+  - https://kubernetes-sigs.github.io/descheduler
