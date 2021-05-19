@@ -1,0 +1,18 @@
+descheduler:
+  cmdOptions:
+    evict-local-storage-pods: '' 
+  nameOverride: "descheduler"
+  schedule: "*/2 * * * *"
+  deschedulerPolicy:
+    strategies:
+      RemoveDuplicates:
+       enabled: true
+      RemovePodsViolatingNodeAffinity:
+        enabled: true
+        params:
+          nodeAffinityType:
+          - requiredDuringSchedulingIgnoredDuringExecution
+      RemovePodsViolatingInterPodAntiAffinity:
+        enabled: true
+      LowNodeUtilization:
+        enabled: false
