@@ -23,6 +23,8 @@ resources:
     name: dashboards-longhorn
     labels:
       grafana_dashboard: "1"
+    annotations:
+      k8s-sidecar-target-directory: /tmp/dashboards/storage
   data:
     longhorn.json: |-
 {{ readFile "../../../dashboards/longhorn-dashboards.json" | indent 6 }}
