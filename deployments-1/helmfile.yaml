@@ -230,7 +230,7 @@ environments:
       - nginx_int_version: '3.26.0'
       - nginx_ext_version: '3.26.0'
       - certmanager_version: '1.2.0'
-      - longhorn_version: '1.1.0'
+      - longhorn_version: '1.1.1'
       - velero_version: '2.12.17'
       - prometheus_stack_version: '12.10.6'
       - argocd_version: '3.2.2'
