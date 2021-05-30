@@ -1,0 +1,25 @@
+replicaCount: 2
+
+# Enable injecting values from Vault to ConfigMaps
+# This can cause issues when used with Helm, so it is not enabled by default
+configMapMutation: false
+
+#metrics:
+#  enabled: true
+#  serviceMonitor:
+#    enabled: true
+#    additionalLabels:
+#      release: monitoring
+
+# You will need to add the following annotations to the resources that you wish to mutate:
+#
+# vault.security.banzaicloud.io/vault-addr: https://vault01.trustyou.com
+# vault.security.banzaicloud.io/vault-path: integration-survey  # sample for survey team, you must choose your role
+# vault.security.banzaicloud.io/vault-role: integration-survey  # sample for survey team, you must choose your role
+# vault.security.banzaicloud.io/vault-skip-verify: "true" # Container is missing Trusted Mozilla roots too.
+#
+# Vault roles creation sample:
+#
+# vault write auth/integration-survey/role/integration-survey bound_service_account_names=default bound_service_account_namespaces=integration-survey
+# vault write auth/integration-survey/role/integration-madventure bound_service_account_names=default bound_service_account_namespaces=integration-madventure
+#

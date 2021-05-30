@@ -1,3 +1,7 @@
+helmDefaults:
+  wait: true
+  historyMax: 5
+
 repositories:
   - name: argo
     url: https://argoproj.github.io/argo-helm
@@ -15,10 +19,65 @@ repositories:
     url: https://prometheus-community.github.io/helm-charts
   - name: kured
     url: https://weaveworks.github.io/kured
+  - name: banzaicloud-stable
+    url: https://kubernetes-charts.banzaicloud.com
 #  - name: nextcloud
 #    url: https://nextcloud.github.io/helm/
 
 releases:
+
+- name: vault-operator
+  chart: banzaicloud-stable/vault-operator
+  version: 1.13.0
+  namespace: vault-operator
+  createNamespace: true
+#  installed: {{ exec "./scripts/check-crd-installed.sh" (list "vaults.vault.banzaicloud.com") | trim }}
+  labels:
+    tier: secrets
+    scope: vault-operator
+    stage: 1
+
+- name: vault-rbac
+  chart: incubator/raw
+  namespace: vault
+  version: 0.2.5
+  atomic: true
+  force: true
+  wait: true
+  values:
+    - environments/{{ .Environment.Name }}/vault/rbac.yaml
+  labels:
+    tier: secrets
+    scope: banzai-vault-rbac
+    stage: 2
+
+- name: vault-server
+  chart: incubator/raw
+  namespace: vault
+  version: 0.2.5
+  atomic: true
+  force: true
+  wait: true
+  disableValidation: true
+  values:
+    - environments/{{ .Environment.Name }}/vault/cr-raft-storage.yaml
+  labels:
+    tier: secrets
+    scope: vault-server
+    stage: 3
+
+- name: banzai-injector
+  chart: banzaicloud-stable/vault-secrets-webhook
+  version: '{{ .Values | get "banzai_version" "1.13.0" }}'
+  namespace: vault-infra
+  createNamespace: true
+  wait: true
+  values:
+    - environments/{{ .Environment.Name }}/vault/banzai-injector.yaml
+  labels:
+    tier: secrets
+    scope: banzai-injector
+    stage: 4
 
 - name: argocd
   chart: argo/argo-cd
@@ -50,7 +109,6 @@ releases:
 - name: cert-manager
   namespace: cert-manager
   createNamespace: true
-  wait: true
   chart: jetstack/cert-manager
   version: '{{ .Values | get "certmanager_version" "v1.0.4" }}'
   values:
@@ -140,7 +198,6 @@ releases:
   createNamespace: true
   namespace: velero
   version: '{{ .Values | get "raw_version" "0.2.5" }}'
-  wait: true
   values:
     - environments/all/velero/templates.yaml.gotmpl
   labels:
