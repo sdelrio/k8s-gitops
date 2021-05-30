@@ -182,6 +182,28 @@ releases:
     tier: storage
     scope: longhorn-sc
 
+- name: longhorn-rwx
+  chart: incubator/raw
+  namespace: longhorn
+  version: '{{ .Values | get "raw_version" "0.2.5" }}'
+  disableValidation: true
+  values:
+    - environments/{{ .Environment.Name }}/longhorn/rwx-security-longhorn.yaml
+  labels:
+    tier: storage
+    scope: longhorn-rwx
+
+- name: longhorn-nfs
+  chart: incubator/raw
+  namespace: longhorn
+  version: '{{ .Values | get "raw_version" "0.2.5" }}'
+  disableValidation: true
+  values:
+    - environments/{{ .Environment.Name }}/longhorn/nfs-provisioner-longhorn.yaml
+  labels:
+    tier: storage
+    scope: longhorn-rwx
+
 - name: longhorn-sm
   chart: incubator/raw
   namespace: monitoring
