@@ -1,0 +1,90 @@
+#https://raw.githubusercontent.com/longhorn/longhorn/v1.0.1/examples/rwx/01-security.yaml
+# vim: set sw=2 ts=2 sts=2 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+
+resources:
+- apiVersion: policy/v1beta1
+  kind: PodSecurityPolicy
+  metadata:
+    name: longhorn-nfs-provisioner
+  spec:
+    fsGroup:
+      rule: RunAsAny
+    allowedCapabilities:
+      - DAC_READ_SEARCH
+      - SYS_RESOURCE
+    runAsUser:
+      rule: RunAsAny
+    seLinux:
+      rule: RunAsAny
+    supplementalGroups:
+      rule: RunAsAny
+    volumes:
+      - configMap
+      - downwardAPI
+      - emptyDir
+      - persistentVolumeClaim
+      - secret
+      - hostPath
+
+- kind: ClusterRole
+  apiVersion: rbac.authorization.k8s.io/v1
+  metadata:
+    name: longhorn-nfs-provisioner
+  rules:
+    - apiGroups: [""]
+      resources: ["persistentvolumes"]
+      verbs: ["get", "list", "watch", "create", "delete"]
+    - apiGroups: [""]
+      resources: ["persistentvolumeclaims"]
+      verbs: ["get", "list", "watch", "update"]
+    - apiGroups: ["storage.k8s.io"]
+      resources: ["storageclasses"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: [""]
+      resources: ["events"]
+      verbs: ["create", "update", "patch"]
+    - apiGroups: [""]
+      resources: ["services", "endpoints"]
+      verbs: ["get"]
+    - apiGroups: ["extensions"]
+      resources: ["podsecuritypolicies"]
+      resourceNames: ["nfs-provisioner"]
+      verbs: ["use"]
+
+- kind: ClusterRoleBinding
+  apiVersion: rbac.authorization.k8s.io/v1
+  metadata:
+    name: longhorn-nfs-provisioner
+  subjects:
+    - kind: ServiceAccount
+      name: longhorn-nfs-provisioner
+      namespace: longhorn
+  roleRef:
+    kind: ClusterRole
+    name: longhorn-nfs-provisioner
+    apiGroup: rbac.authorization.k8s.io
+
+- kind: Role
+  apiVersion: rbac.authorization.k8s.io/v1
+  metadata:
+    name: leader-locking-longhorn-nfs-provisioner
+    namespace: longhorn
+  rules:
+    - apiGroups: [""]
+      resources: ["endpoints"]
+      verbs: ["get", "list", "watch", "create", "update", "patch"]
+
+- kind: RoleBinding
+  apiVersion: rbac.authorization.k8s.io/v1
+  metadata:
+    name: leader-locking-longhorn-nfs-provisioner
+    namespace: longhorn
+  subjects:
+    - kind: ServiceAccount
+      name: longhorn-nfs-provisioner
+      namespace: longhorn
+  roleRef:
+    kind: Role
+    name: leader-locking-longhorn-nfs-provisioner
+    apiGroup: rbac.authorization.k8s.io
+
