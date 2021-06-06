@@ -7,14 +7,33 @@ descheduler:
   failedJobsHistoryLimit: 1
   deschedulerPolicy:
     strategies:
-      RemoveDuplicates:
-       enabled: true
-      RemovePodsViolatingNodeAffinity:
+      "RemoveDuplicates":
+        enabled: false
+
+      # zigbee2mqtt nodeAffinity
+      "RemovePodsViolatingNodeAffinity" :
         enabled: true
         params:
           nodeAffinityType:
           - requiredDuringSchedulingIgnoredDuringExecution
-      RemovePodsViolatingInterPodAntiAffinity:
+          namespaces:
+            include: iot
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: zigbee2mqtt
+      "RemovePodsHavingTooManyRestarts":
         enabled: true
-      LowNodeUtilization:
+        params:
+          podsHavingTooManyRestarts:
+            podRestartThreshold: 100
+            includingInitContainers: true
+          namespaces:
+            include: iot
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: zigbee2mqtt
+
+      "RemovePodsViolatingInterPodAntiAffinity":
+        enabled: false
+      "LowNodeUtilization":
         enabled: false
