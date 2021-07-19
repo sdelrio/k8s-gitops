@@ -6,7 +6,7 @@ global:
     ## get latest version, with helmfile + sops + helm plugins
   image:
     repository: sdelrio/argocd-helmfile
-    tag: 2.0.1
+    tag: 2.0.2
 #    tag: v1.8.7-2
 
 server:
@@ -104,11 +104,12 @@ controller:
   logLevel: info
 
   # If changing the number of replicas you must pass the number as ARGOCD_CONTROLLER_REPLICAS as an environment variable
-  replicas: 2
+  # replicas > 1 only worth if managing several clusters
+  #replicas: 2
   enableStatefulSet: true
-  env:
-    - name: "ARGOCD_CONTROLLER_REPLICAS"
-      value: "2"
+  #env:
+  #  - name: "ARGOCD_CONTROLLER_REPLICAS"
+  #    value: "2"
 
   resources:
     limits:
@@ -174,6 +175,9 @@ repoServer:
     - name: "gpg-asc"
       secret:
         secretName: gpg-asc
+  extraArgs:
+    - '--parallelismlimit'
+    - '1'
 
 # ArgoCD configs
 configs:
