@@ -1,0 +1,40 @@
+env:
+  TZ: "UTC"
+persistence:
+  data:
+    enabled: true
+    storageClass: longhorn-r3
+    size: 5Gi
+    accessMode: ReadWriteOnce
+    
+ingress:
+  main:
+    enabled: true
+    primary: true
+    ingressClassName: "nginx"
+    hosts:
+      - host: syncthing.internal.{{ .Values.dns_domain_1 }}
+        paths:
+          - path: / 
+            pathType: Prefix
+            service:
+              name: syncthing
+              port: 8384
+service:
+  listen:
+    type: LoadBalancer
+    annotations:
+      metallb.universe.tf/allow-shared-ip: syncthing 
+  discovery:
+    type: LoadBalancer
+    annotations:
+      metallb.universe.tf/allow-shared-ip: syncthing 
+
+resources:
+  limits:
+    cpu: 450m
+    memory: 400Mi
+  requests:
+    cpu: 225m
+    memory: 200Mi
+

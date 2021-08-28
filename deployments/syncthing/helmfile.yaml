@@ -1,0 +1,26 @@
+repositories:
+  - name: k8s-at-home
+    url: https://k8s-at-home.com/charts/
+
+releases:
+
+# SyncThing - continuous file synchronization program
+# https://syncthing.net/
+
+- name: syncthing
+  chart: k8s-at-home/syncthing
+  version: "3.0.0"
+  namespace: syncthing
+  values:
+    - environments/{{ .Environment.Name }}/values.yaml.gotmpl
+  labels:
+    tier: home
+    scope: syncthing
+
+environments:
+  dev:
+    secrets:
+      - ../../secrets/dev/secrets.yaml
+  nuc:
+    secrets:
+      - ../../secrets/nuc/secrets.yaml
