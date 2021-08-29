@@ -7,5 +7,5 @@ appVersion: "1.0"
 
 dependencies:
 - name: node-feature-discovery
-  repository: https://k8s-at-home.com/charts/
+  repository: https://k8s-at-home.com/charts
   version: 2.0.0
