@@ -6,7 +6,7 @@ global:
     ## get latest version, with helmfile + sops + helm plugins
   image:
     repository: sdelrio/argocd-helmfile
-    tag: v2.1.1-1
+    tag: 2.1.2
 
 server:
   # log format: text|json
@@ -83,7 +83,7 @@ server:
           args: ["--import", "/home/argocd/gpg/gpg.asc"]
         generate:
           command: ["/bin/sh", "-c"]
-          args: ["helmfile --no-color --allow-no-matching-release $HELMFILE_OPTS template $HELMFILE_TEMPLATE_OPTS --args '--kube-version=1.18'"]
+          args: ["helmfile --no-color --allow-no-matching-release $HELMFILE_OPTS template $HELMFILE_TEMPLATE_OPTS --args '--kube-version=1.20'"]
 
 redis:
   resources:
