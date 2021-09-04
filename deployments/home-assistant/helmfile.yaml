@@ -9,7 +9,7 @@ releases:
 
 - name: home-assistant
   chart: k8s-at-home/home-assistant
-  version: '{{ .Values | get "home_assistant_version" "6.0.0" }}'
+  version: '{{ .Values | get "home_assistant_version" "8.3.1" }}'
   values:
     - environments/{{ .Environment.Name }}/values.yaml.gotmpl
   labels:
