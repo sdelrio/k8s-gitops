@@ -252,7 +252,7 @@ releases:
   # * https://github.com/roboll/helmfile/issues/1124
   disableOpenAPIValidation: true
   chart: prometheus-community/kube-prometheus-stack
-  version: '{{ .Values | get "prometheus_stack_version" "13.13.1" }}'
+  version: '{{ .Values | get "prometheus_stack_version" "14.9.0" }}'
   values:
     - environments/{{ .Environment.Name }}/prometheus-stack/values.yaml.gotmpl
   labels:
