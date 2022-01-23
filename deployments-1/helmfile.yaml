@@ -266,7 +266,7 @@ releases:
   namespace: kured
   createNamespace: true
   chart: kured/kured
-  version: '{{ .Values | get "kured_version" "2.4.3" }}'  
+  version: '{{ .Values | get "kured_version" "2.10.2" }}'
   values:
     - environments/{{ .Environment.Name }}/kured/values.yaml
   labels:
