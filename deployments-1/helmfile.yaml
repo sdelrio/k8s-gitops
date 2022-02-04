@@ -81,7 +81,7 @@ releases:
 
 - name: argocd
   chart: argo/argo-cd
-  version: '{{ .Values | get "argocd_version" "3.22.1" }}'
+  version: '{{ .Values | get "argocd_version" "3.33.3" }}'
   namespace: argocd
   createNamespace: true
   values:
